@@ -1,0 +1,13 @@
+﻿@Master['Master.html']
+
+@Section['Content']
+<div class="jumbotron">
+    <div class="container">
+        <h1>Sorry, something has gone horribly wrong</h1>
+        <p>Our team have been notified of this problem and will be working to fix it soon. In the meantime why don't you try again and see it works this time?</p>
+        <p><button type="button" onclick="window.location.reload()">Try again</button></p>
+        <h2>@Model.ErrorMessage</h2>
+        <pre>@Model.FullException</pre>
+    </div>
+</div>
+@EndSection
