@@ -3,7 +3,7 @@ using Autofac;
 using Autofac.Builder;
 using NUnit.Framework;
 using TeamBot.Tests.AutofacModules;
-using TeamBot.Tests.Conventions.IoC;
+using TeamBot.Tests.Conventions.Container;
 
 namespace TeamBot.Tests.Conventions
 {
@@ -13,7 +13,7 @@ namespace TeamBot.Tests.Conventions
         public void VerifyAllTypesCanBeResolved()
         {
             var assertion = new AutofacContainerAssertion(Filter, IsKnownOffender);
-            var container = TeamBot.IoC.LetThereBeIoC(ContainerBuildOptions.IgnoreStartableComponents, builder => builder.RegisterModule<SubstituteModule>());
+            var container = IoC.LetThereBeIoC(ContainerBuildOptions.IgnoreStartableComponents, builder => builder.RegisterModule<SubstituteModule>());
             assertion.Verify(container);
             container.Dispose();
         }
@@ -22,7 +22,7 @@ namespace TeamBot.Tests.Conventions
         public void VerifyAllRegisteredTypesLifetimes()
         {
             var assertion = new AutofacLifetimeAssertion();
-            var container = TeamBot.IoC.LetThereBeIoC(ContainerBuildOptions.IgnoreStartableComponents, builder => builder.RegisterModule<SubstituteModule>());
+            var container = IoC.LetThereBeIoC(ContainerBuildOptions.IgnoreStartableComponents, builder => builder.RegisterModule<SubstituteModule>());
             assertion.Verify(container);
             container.Dispose();
         }
@@ -34,8 +34,6 @@ namespace TeamBot.Tests.Conventions
 
         private bool IsKnownOffender(Type serviceType)
         {
-            //if (serviceType == typeof(UserAccountService<HierarchicalUserAccount>)) return true;
-
             return false;
         }
     }

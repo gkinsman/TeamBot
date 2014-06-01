@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
-using Autofac;
+﻿using System;
+using System.Threading.Tasks;
 using Nancy;
 using Nancy.ModelBinding;
 using TeamBot.Infrastructure.Messages;
-using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
 
 namespace TeamBot.Features
@@ -11,9 +10,12 @@ namespace TeamBot.Features
     public class BotModule : NancyModule
     {
         public BotModule(
-            ILifetimeScope rootScope)
+            IMessageProcessor messageProcessor)
             : base("/bot")
         {
+            if (messageProcessor == null) 
+                throw new ArgumentNullException("messageProcessor");
+
             Post["/", true] = async (ctx, ct) =>
             {
                 IncomingMessage incomingMessage = Request.Headers.ContentType == "application/json"
@@ -25,11 +27,7 @@ namespace TeamBot.Features
 
                 await Task.Run(async () =>
                 {
-                    using (var scope = rootScope.BeginLifetimeScope(b => b.RegisterInstance(new SlackContext(company, token)).AsSelf()))
-                    {
-                        var messageProcessor = scope.Resolve<IMessageProcessor>();
-                        await messageProcessor.Process(incomingMessage);
-                    }
+                    await messageProcessor.Process(company, token, incomingMessage);
                 });
 
                 return new Response().WithStatusCode(HttpStatusCode.OK);

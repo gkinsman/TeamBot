@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
@@ -13,6 +14,9 @@ namespace TeamBot.Features.Help
 
         public HelpHandler(ILifetimeScope scope)
         {
+            if (scope == null) 
+                throw new ArgumentNullException("scope");
+
             _scope = scope;
         }
 

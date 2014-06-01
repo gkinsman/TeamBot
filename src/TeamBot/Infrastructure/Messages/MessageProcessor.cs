@@ -27,7 +27,7 @@ namespace TeamBot.Infrastructure.Messages
             _client = client;
         }
 
-        public async Task Process(IncomingMessage incomingMessage)
+        public async Task Process(string company, string token, IncomingMessage incomingMessage)
         {
             if (incomingMessage == null)
                     throw new ArgumentNullException("incomingMessage");
@@ -77,7 +77,7 @@ namespace TeamBot.Infrastructure.Messages
             }
 
             foreach (var message in messages)
-                await _client.PostMessage(message);
+                await _client.PostMessage(company, token, message);
         }
     }
 }

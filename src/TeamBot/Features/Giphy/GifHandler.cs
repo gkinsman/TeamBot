@@ -12,6 +12,9 @@ namespace TeamBot.Features.Giphy
 
         public GiphyHandler(IGiphyClient client)
         {
+            if (client == null) 
+                throw new ArgumentNullException("client");
+
             _client = client;
         }
 

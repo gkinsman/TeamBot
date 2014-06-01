@@ -12,6 +12,9 @@ namespace TeamBot.Features.TeamCity
 
         public TeamCityHandler(ITeamCityClient client)
         {
+            if (client == null) 
+                throw new ArgumentNullException("client");
+
             _client = client;
         }
 

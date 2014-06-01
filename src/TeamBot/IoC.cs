@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using Autofac.Builder;
-using TeamBot.AutofacModules;
 
 namespace TeamBot
 {

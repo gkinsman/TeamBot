@@ -105,6 +105,9 @@ namespace TeamBot
 
         private ClaimsPrincipal ResolveClaimsPrincipal(NancyContext ctx)
         {
+            if (ctx == null) 
+                throw new ArgumentNullException("ctx");
+
             object owinEnvironmentObject;
             if (ctx.Items.TryGetValue(NancyOwinHost.RequestEnvironmentKey, out owinEnvironmentObject))
             {

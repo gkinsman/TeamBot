@@ -9,7 +9,7 @@ using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
 
-namespace TeamBot.Tests.Conventions.IoC
+namespace TeamBot.Tests.Conventions.Container
 {
     public abstract class AutofacBaseAssertion
     {

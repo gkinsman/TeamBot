@@ -42,6 +42,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
+    <Reference Include="Nancy, Version=0.22.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Nancy.0.22.2\lib\net40\Nancy.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy.Bootstrappers.Autofac, Version=0.22.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Nancy.Bootstrappers.Autofac.0.22.2\lib\net40\Nancy.Bootstrappers.Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -100,10 +108,10 @@
     <Compile Include="Bot\Handlers\FooMessageHandler.cs" />
     <Compile Include="Conventions\VerifyAllTypes.cs" />
     <Compile Include="Conventions\VerifyAllTypesRegisteredWithTheContainer.cs" />
-    <Compile Include="Conventions\IoC\AutofacBaseAssertion.cs" />
-    <Compile Include="Conventions\IoC\AutofacContainerAssertion.cs" />
-    <Compile Include="Conventions\IoC\AutofacLifetimeAssertion.cs" />
-    <Compile Include="Conventions\IoC\Lifetime.cs" />
+    <Compile Include="Conventions\Container\AutofacBaseAssertion.cs" />
+    <Compile Include="Conventions\Container\AutofacContainerAssertion.cs" />
+    <Compile Include="Conventions\Container\AutofacLifetimeAssertion.cs" />
+    <Compile Include="Conventions\Container\Lifetime.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Bot\Scenarios.cs" />

@@ -13,7 +13,12 @@ namespace TeamBot.Infrastructure.ErrorHandling.Nancy
         private JsonErrorResponse(Error error, ISerializer serializer)
             : base(error, serializer)
         {
-            if (error == null) throw new ArgumentNullException("error");
+            if (error == null) 
+                throw new ArgumentNullException("error");
+            
+            if (serializer == null) 
+                throw new ArgumentNullException("serializer");
+
             _error = error;
         }
 
@@ -22,6 +27,12 @@ namespace TeamBot.Infrastructure.ErrorHandling.Nancy
 
         public static JsonErrorResponse FromMessage(string message, ISerializer serializer, HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
         {
+            if (message == null) 
+                throw new ArgumentNullException("message");
+
+            if (serializer == null) 
+                throw new ArgumentNullException("serializer");
+
             return (JsonErrorResponse) new JsonErrorResponse(new Error { ErrorMessage = message }, serializer)
                 .WithStatusCode(statusCode)
                 .WithHeader("Reason", message);
@@ -29,6 +40,12 @@ namespace TeamBot.Infrastructure.ErrorHandling.Nancy
 
         public static JsonErrorResponse FromException(Exception ex, ISerializer serializer)
         {
+            if (ex == null) 
+                throw new ArgumentNullException("ex");
+
+            if (serializer == null) 
+                throw new ArgumentNullException("serializer");
+
             var error = new Error { ErrorMessage = ex.Message, FullException = AppEnvironment.IsProduction() ? null : ex.ToString() };
 
             return (JsonErrorResponse) new JsonErrorResponse(error, serializer)

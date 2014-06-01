@@ -43,12 +43,21 @@ namespace TeamBot
 
         public NancyBootstrapper ResolveClaimsPrincipal(Func<NancyContext, ClaimsPrincipal> resolver)
         {
+            if (resolver == null) 
+                throw new ArgumentNullException("resolver");
+
             _claimsPrincipalResolver = resolver;
             return this;
         }
 
         protected override void ApplicationStartup(ILifetimeScope container, IPipelines pipelines)
         {
+            if (container == null) 
+                throw new ArgumentNullException("container");
+            
+            if (pipelines == null) 
+                throw new ArgumentNullException("pipelines");
+
             pipelines.BeforeRequest +=
                 async (ctx, ct) =>
                 {

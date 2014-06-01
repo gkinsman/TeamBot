@@ -4,12 +4,15 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
+using Microsoft.Owin;
+using Nancy;
 using NUnit.Framework;
 using Ploeh.Albedo;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.AutoNSubstitute;
 using Ploeh.AutoFixture.Idioms;
 using TeamBot.AutofacModules;
+using TeamBot.Infrastructure.Security;
 
 namespace TeamBot.Tests.Conventions
 {
@@ -40,7 +43,10 @@ namespace TeamBot.Tests.Conventions
             if (type == null) 
                 throw new ArgumentNullException("type");
 
+            if (type.Namespace.EndsWith("Nancy")) return false;
             if (type.Namespace.EndsWith("Models")) return false;
+            if (type.IsAssignableTo<Exception>()) return false;
+            if (type == typeof (IoC)) return false;
             
             return true;
         }
@@ -48,6 +54,9 @@ namespace TeamBot.Tests.Conventions
         [TestCaseSource("GetTypesToVerify")]
         public void VerifyBoundariesForAllConstructors(Type type)
         {
+            if (type.IsAssignableTo<OwinMiddleware>()) Assert.Ignore();
+            if (type == typeof(UserIdentity)) Assert.Ignore();
+
             var assertion = new GuardClauseAssertion(_fixtureFactory());
             ConstructorInfo[] ctors = type.GetConstructors();
             assertion.Verify(ctors);
@@ -56,6 +65,12 @@ namespace TeamBot.Tests.Conventions
         [TestCaseSource("GetTypesToVerify")]
         public void VerifyBoundariesForAllMethods(Type type)
         {
+            if (type == typeof(UserIdentity)) Assert.Ignore();
+            if (type == typeof(UserIdentityEnricher)) Assert.Ignore();
+            if (type.IsAssignableTo<OwinMiddleware>()) Assert.Ignore();
+            if (type.IsAssignableTo<NancyModule>()) Assert.Ignore();
+            if (type.IsAssignableTo<NancyBootstrapper>()) Assert.Ignore();
+
             var assertion = new GuardClauseAssertion(_fixtureFactory());
             MethodInfo[] methods = type.GetMethods().Where(info => !info.ReturnType.IsAssignableTo<Task>()).ToArray();
             assertion.Verify(methods);
@@ -64,6 +79,8 @@ namespace TeamBot.Tests.Conventions
         [TestCaseSource("GetTypesToVerify")]
         public void VerifyBoundariesForAllPropertiesOnImmutableClass(Type type)
         {
+            if (type.IsAssignableTo<NancyModule>()) Assert.Ignore();
+
             var assertion = new GuardClauseAssertion(_fixtureFactory());
             var properties = type.GetProperties();
             assertion.Verify(properties);
@@ -80,6 +97,9 @@ namespace TeamBot.Tests.Conventions
         [TestCaseSource("GetTypesToVerify")]
         public void VerifyPublicPropertiesAssignableFromConstructorAreCorrectlyInitialized(Type type)
         {
+            if (type.IsAssignableTo<NancyModule>()) Assert.Ignore();
+            if(type == typeof(UserIdentity)) Assert.Ignore();
+
             var fixture = new Fixture();
 
             var customMatcher = new VisitorEqualityComparer<NameAndType>(

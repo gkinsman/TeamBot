@@ -5,8 +5,8 @@ namespace TeamBot.Infrastructure.Slack
 {
     public interface ISlackClient
     {
-        Task PostMessage(Message message);
+        Task PostMessage(string company, string token, Message message);
 
-        Task PostMessage(string text, string channel);
+        Task PostMessage(string company, string token, string text, string channel);
     }
 }

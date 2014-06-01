@@ -5,7 +5,7 @@ using Autofac;
 using Autofac.Core;
 using TeamBot.Tests.Extensions;
 
-namespace TeamBot.Tests.Conventions.IoC
+namespace TeamBot.Tests.Conventions.Container
 {
     public class AutofacContainerAssertion : AutofacBaseAssertion
     {

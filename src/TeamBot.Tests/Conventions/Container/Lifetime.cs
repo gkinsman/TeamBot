@@ -1,4 +1,4 @@
-﻿namespace TeamBot.Tests.Conventions.IoC
+﻿namespace TeamBot.Tests.Conventions.Container
 {
     public enum Lifetime
     {

@@ -9,22 +9,12 @@ namespace TeamBot.Infrastructure.Slack
 {
     public class SlackClient : ISlackClient
     {
-        private readonly SlackContext _context;
-        
-        public SlackClient(SlackContext context)
-        {
-            if (context == null) 
-                throw new ArgumentNullException("context");
-
-            _context = context;
-        }
-
-        public async Task PostMessage(Message message)
+        public async Task PostMessage(string company, string token, Message message)
         {
             if (message == null) 
                 throw new ArgumentNullException("message");
 
-            var uri = string.Format("https://{0}.slack.com/services/hooks/incoming-webhook?token={1}", _context.Company, _context.Token);
+            var uri = string.Format("https://{0}.slack.com/services/hooks/incoming-webhook?token={1}", company, token);
             using (var client = new HttpClient())
             {
                 var settings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore };
@@ -36,7 +26,7 @@ namespace TeamBot.Infrastructure.Slack
             }
         }
 
-        public async Task PostMessage(string text, string channel)
+        public async Task PostMessage(string company, string token, string text, string channel)
         {
             if (text == null) 
                 throw new ArgumentNullException("text");
@@ -44,7 +34,7 @@ namespace TeamBot.Infrastructure.Slack
             if (channel == null) 
                 throw new ArgumentNullException("channel");
 
-            await PostMessage(new Message {Text = text, Channel = channel});
+            await PostMessage(company, token, new Message {Text = text, Channel = channel});
         }
     }
 }

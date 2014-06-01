@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Nancy.Security;
@@ -9,6 +10,9 @@ namespace TeamBot.Infrastructure.Security
     {
         public UserIdentity(ClaimsIdentity claimsIdentity)
         {
+            if (claimsIdentity == null) 
+                throw new ArgumentNullException("claimsIdentity");
+
             UserName = claimsIdentity.Name;
             ActualClaims = claimsIdentity.Claims;
         }
@@ -27,16 +31,25 @@ namespace TeamBot.Infrastructure.Security
     {
         public static IEnumerable<Claim> ActualClaims(this IUserIdentity identity)
         {
+            if (identity == null) 
+                throw new ArgumentNullException("identity");
+
             return ((UserIdentity)identity).ActualClaims;
         }
 
         public static string TokenUserId(this IUserIdentity identity)
         {
+            if (identity == null) 
+                throw new ArgumentNullException("identity");
+
             return identity.ActualClaims().Single(c => c.Type.Equals("user_id")).Value;
         }
 
         public static string TokenUserId(this ClaimsIdentity identity)
         {
+            if (identity == null) 
+                throw new ArgumentNullException("identity");
+
             return identity.Claims.Single(c => c.Type.Equals("user_id")).Value;
         }
     }

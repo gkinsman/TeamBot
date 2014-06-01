@@ -15,6 +15,12 @@ namespace TeamBot.Infrastructure.ErrorHandling.Nancy
 
         public ErrorStatusCodeHandler(IViewFactory viewFactory, ISerializer serializer) : base(viewFactory)
         {
+            if (viewFactory == null) 
+                throw new ArgumentNullException("viewFactory");
+            
+            if (serializer == null) 
+                throw new ArgumentNullException("serializer");
+
             _serializer = serializer;
         }
 
@@ -69,6 +75,9 @@ namespace TeamBot.Infrastructure.ErrorHandling.Nancy
 
         private static Exception GetExceptionFromContext(NancyContext context)
         {
+            if (context == null) 
+                throw new ArgumentNullException("context");
+
             Object exceptionObject;
             context.Items.TryGetValue(NancyEngine.ERROR_EXCEPTION, out exceptionObject);
             var exception = (Exception) exceptionObject;
@@ -77,6 +86,9 @@ namespace TeamBot.Infrastructure.ErrorHandling.Nancy
 
         private static bool ShouldRenderFriendlyErrorPage(NancyContext context)
         {
+            if (context == null) 
+                throw new ArgumentNullException("context");
+
             var enumerable = context.Request.Headers.Accept;
 
             var ranges = enumerable.OrderByDescending(o => o.Item2).Select(o => MediaRange.FromString(o.Item1)).ToList();
