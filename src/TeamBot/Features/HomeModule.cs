@@ -8,7 +8,7 @@ namespace TeamBot.Features
         {
             Get["", true] = async (ctx, ct) =>
             {
-                return View["index"];
+                return View["index", new { Version = typeof(IoC).Assembly.GetName().Version.ToString(3) }];
             };
         }
     }
