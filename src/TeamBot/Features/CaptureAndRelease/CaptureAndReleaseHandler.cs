@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Threading;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using TeamBot.Infrastructure.Messages;
 using TeamBot.Infrastructure.Slack.Models;
 
@@ -10,7 +11,7 @@ namespace TeamBot.Features.CaptureAndRelease
     {
         public override string[] Commands()
         {
-            return new[] {"capture","release"};
+            return new [] { "capture", "release" };
         }
 
         public override async Task<Message> Handle(IncomingMessage incomingMessage)
@@ -54,6 +55,29 @@ namespace TeamBot.Features.CaptureAndRelease
             }
             else //release
             {
+                if (string.IsNullOrEmpty(resource))
+                {
+                    var fields = new List<AttachmentField>();
+                    
+                    foreach (var key in ViewBag.Keys)
+                    {
+                        fields.Add(new AttachmentField
+                        {
+                            Title = key,
+                            Value = string.Format("@{0}", ViewBag[key]),
+                            Short = true,
+                        });
+                    }
+                    
+                    return new Attachment
+                    {
+                        PreText = "Current Inmates",
+                        Fields = fields,
+                        Channel = string.Format("#{0} ", incomingMessage.ChannelName),
+                        LinkNames = true
+                    };
+                }
+                
                 string text;
                 object value;
                 if (ViewBag.TryGetValue(resource, out value) == false)
@@ -64,7 +88,7 @@ namespace TeamBot.Features.CaptureAndRelease
                 }
                 else
                 {
-                    text = string.Format("@{0} {1} has not been captured", incomingMessage.UserName, value);
+                    text = string.Format("@{0} {1} has not been captured", incomingMessage.UserName, incomingMessage.Text);
                 }
 
                 return new Message
