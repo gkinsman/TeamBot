@@ -12,6 +12,8 @@ using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.AutoNSubstitute;
 using Ploeh.AutoFixture.Idioms;
 using TeamBot.AutofacModules;
+using TeamBot.Features.Giphy;
+using TeamBot.Infrastructure.Messages;
 using TeamBot.Infrastructure.Security;
 
 namespace TeamBot.Tests.Conventions
@@ -110,11 +112,15 @@ namespace TeamBot.Tests.Conventions
 
             var excludeTypeProperties = new Dictionary<Type, string[]> 
             {   
+
             };
 
             string[] excludeProperties;
             if (excludeTypeProperties.TryGetValue(type, out excludeProperties) == false)
                 excludeProperties = Enumerable.Empty<string>().ToArray();
+
+            if (type.IsAssignableTo<MessageHandler>())
+                excludeProperties = excludeProperties.Union(new[] {"Command"} ).ToArray();
 
             PropertyInfo[] properties = type.GetProperties().Where(p => !excludeProperties.Contains(p.Name)).ToArray();
             assertion.Verify(properties);

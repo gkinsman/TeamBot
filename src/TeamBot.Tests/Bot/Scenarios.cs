@@ -3,6 +3,7 @@ using Autofac;
 using NSubstitute;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
+using Raven.Client;
 using TeamBot.Infrastructure.Messages;
 using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
@@ -11,14 +12,17 @@ using TeamBot.Tests.Specifications;
 
 namespace TeamBot.Tests.Bot
 {
+    [Ignore]
     public class WhenProcessingIncomingMessage : AutoSpecificationForAsync<IMessageProcessor>
     {
         private IContainer _container;
         private string _userMessage;
         private IncomingMessage _incomingMessage;
         private ISlackClient _client;
+        private IDocumentStore _documentStore;
         private string _company;
         private string _token;
+        private IDocumentSession _session;
 
         [SetUp]
         public override void SetUp()
@@ -39,8 +43,11 @@ namespace TeamBot.Tests.Bot
             _company = string.Format("comapy{0}", Fixture.Create<string>());
             _token = string.Format("token{0}", Fixture.Create<string>());
             _client = Fixture.Freeze<ISlackClient>();
+            _session = Fixture.Freeze<IDocumentSession>();
+            _documentStore = Fixture.Freeze<IDocumentStore>();
+            _documentStore.OpenSession().Returns(_session);
 
-            return new MessageProcessor(_container, _client);
+            return new MessageProcessor(_container, _documentStore, _client);
         }
 
         protected override async Task When()
