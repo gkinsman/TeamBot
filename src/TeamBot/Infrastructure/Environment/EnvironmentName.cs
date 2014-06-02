@@ -4,7 +4,7 @@
     {
         Undefined,
         Local,
-        ContinousIntergration,
+        CI,
         Nightly,
         Production
     }
