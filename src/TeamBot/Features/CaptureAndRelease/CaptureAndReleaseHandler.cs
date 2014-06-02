@@ -29,15 +29,14 @@ namespace TeamBot.Features.CaptureAndRelease
                     fields.Add(new AttachmentField
                     {
                         Title = key,
-                        Value = string.Format("@{0}", ViewBag[key]),
-                        Short = true,
+                        Value = string.Format("@{0}", ViewBag[key])
                     });
                 }
 
                 return new Attachment
                 {
-                    Text = string.Format("@{0} what are you trying to capture?", incomingMessage.UserName),
-                    PreText = "Current Inmates",
+                    PreText = string.Format("@{0} what are you trying to do?", incomingMessage.UserName),
+                    Text = "List of inmates",
                     Fields = fields,
                     Channel = string.Format("#{0} ", incomingMessage.ChannelName),
                     LinkNames = true
@@ -71,7 +70,7 @@ namespace TeamBot.Features.CaptureAndRelease
             {   
                 string text;
                 object value;
-                if (ViewBag.TryGetValue(resource, out value) == false)
+                if (ViewBag.TryGetValue(resource, out value))
                 {
                     ViewBag.Remove(resource);
 
