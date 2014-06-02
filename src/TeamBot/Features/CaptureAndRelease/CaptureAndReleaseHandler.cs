@@ -39,11 +39,11 @@ namespace TeamBot.Features.CaptureAndRelease
                 {
                     ViewBag[resource] = incomingMessage.UserName;
 
-                    text = string.Format("@Everyone {0} captured by @{1}", resource, incomingMessage.UserName);
+                    text = string.Format("@everyone {0} captured by @{1}", incomingMessage.Text, incomingMessage.UserName);
                 }
                 else
                 {
-                    text = string.Format("@{0} {1} is being held by @{2}", incomingMessage.UserName, resource, value);
+                    text = string.Format("@{0} {1} is being held by @{2}", incomingMessage.UserName, incomingMessage.Text, value);
                 }
 
                 return new Message
@@ -59,12 +59,12 @@ namespace TeamBot.Features.CaptureAndRelease
                 if (ViewBag.TryGetValue(incomingMessage.Text, out value) == false)
                 {
                     ViewBag.Remove(resource);
-                    
-                    text = string.Format("@Everyone {0} was released by @{1}", resource, incomingMessage.UserName);
+
+                    text = string.Format("@everyone {0} was released by @{1}", incomingMessage.Text, incomingMessage.UserName);
                 }
                 else
                 {
-                    text = string.Format("@{0} {1} is not being held by anyone", incomingMessage.UserName, value);
+                    text = string.Format("@{0} {1} has not been captured", incomingMessage.UserName, value);
                 }
 
                 return new Message
