@@ -18,5 +18,8 @@ namespace TeamBot.Infrastructure.Slack.Models
 
         [JsonProperty(PropertyName = "unfurl_links")]
         public bool UnfurlLinks { get; set; }
+
+        [JsonProperty(PropertyName = "link_names")]
+        public bool LinkNames { get; set; }
     }
 }

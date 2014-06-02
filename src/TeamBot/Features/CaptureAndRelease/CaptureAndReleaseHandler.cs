@@ -6,8 +6,6 @@ using TeamBot.Infrastructure.Slack.Models;
 
 namespace TeamBot.Features.CaptureAndRelease
 {
-    //teambot capture frog | teambot release frog
-
     public class CaptureAndReleaseHandler : MessageHandler
     {
         public override string[] Commands()
@@ -43,20 +41,22 @@ namespace TeamBot.Features.CaptureAndRelease
                 }
                 else
                 {
-                    text = string.Format("@{0} {1} is being held by @{2}", incomingMessage.UserName, incomingMessage.Text, value);
+                    text = string.Format("@{0} {1} was captured by @{2}", incomingMessage.UserName, incomingMessage.Text, value);
                 }
 
                 return new Message
                 {
                     Text = text,
-                    Channel = string.Format("#{0} ", incomingMessage.ChannelName)
+                    Channel = string.Format("#{0} ", incomingMessage.ChannelName),
+                    LinkNames = true,
+
                 };
             }
             else //release
             {
                 string text;
                 object value;
-                if (ViewBag.TryGetValue(incomingMessage.Text, out value) == false)
+                if (ViewBag.TryGetValue(resource, out value) == false)
                 {
                     ViewBag.Remove(resource);
 
@@ -70,7 +70,8 @@ namespace TeamBot.Features.CaptureAndRelease
                 return new Message
                 {
                     Text = text,
-                    Channel = string.Format("#{0} ", incomingMessage.ChannelName)
+                    Channel = string.Format("#{0} ", incomingMessage.ChannelName),
+                    LinkNames = true
                 };
             }
         }
