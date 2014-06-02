@@ -3,29 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using Raven.Client;
 using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
+using TeamBot.Models;
 
 namespace TeamBot.Infrastructure.Messages
 {
     public class MessageProcessor : IMessageProcessor
     {
         private readonly ILifetimeScope _rootScope;
+        private readonly IDocumentStore _documentStore;
         private readonly ISlackClient _client;
 
         public MessageProcessor(
-            ILifetimeScope rootScope, 
+            ILifetimeScope rootScope,
+            IDocumentStore documentStore,
             ISlackClient client)
         {
             if (rootScope == null) 
                 throw new ArgumentNullException("rootScope");
             
+            if (documentStore == null) 
+                throw new ArgumentNullException("documentStore");
+
             if (client == null) 
                 throw new ArgumentNullException("client");
 
             _rootScope = rootScope;
+            _documentStore = documentStore;
             _client = client;
         }
+
+
 
         public async Task Process(string company, string token, IncomingMessage incomingMessage)
         {
@@ -37,7 +47,7 @@ namespace TeamBot.Infrastructure.Messages
                 incomingMessage.Text = string.Join(" ", values.Skip(incomingMessage.Command == null ? 2 : 1));
 
             var messages = new List<Message>();
-            
+
             try
             {
                 using (var scope = _rootScope.BeginLifetimeScope())
@@ -46,24 +56,44 @@ namespace TeamBot.Infrastructure.Messages
 
                     foreach (var handler in handlers.Where(handler => handler.CanHandle(command)))
                     {
-                        messages.Add(await handler.Handle(incomingMessage));
+                        using (var session = _documentStore.OpenSession())
+                        {
+                            var handlerType = handler.GetType().FullName;
+
+                            var model = session.Query<ViewBagModel>()
+                                .FirstOrDefault(c => c.Company == company && c.HandlerName == handlerType);
+
+                            if (model == null)
+                                model = new ViewBagModel(company, handlerType);
+
+                            handler.ViewBag = model.ViewBag;
+
+                            messages.Add(await handler.Handle(incomingMessage));
+
+                            session.Store(model);
+                            session.SaveChanges();
+                        }
                     }
 
                     if (messages.Any() == false)
                     {
                         messages.Add(new Message
                         {
-                            Text = string.Format("@{0} Umm, what do you mean by \"{1} {2}\"", incomingMessage.UserName, command, incomingMessage.Text),
+                            Text =
+                                string.Format("@{0} Umm, what do you mean by \"{1} {2}\"", incomingMessage.UserName,
+                                    command, incomingMessage.Text),
                             Channel = string.Format("#{0}", incomingMessage.ChannelName)
                         });
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 messages.Add(new Message
                 {
-                    Text = string.Format("@{0} Umm, something went wrong  \"{1} {2}\" {3}", incomingMessage.UserName, command, incomingMessage.Text, ex.Message),
+                    Text =
+                        string.Format("@{0} Umm, something went wrong  \"{1} {2}\" {3}", incomingMessage.UserName,
+                            command, incomingMessage.Text, ex.Message),
                     Channel = string.Format("#{0}", incomingMessage.ChannelName)
                 });
             }
@@ -80,4 +110,6 @@ namespace TeamBot.Infrastructure.Messages
                 await _client.PostMessage(company, token, message);
         }
     }
+
+   
 }

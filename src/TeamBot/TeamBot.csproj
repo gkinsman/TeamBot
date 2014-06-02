@@ -160,6 +160,7 @@
     <Compile Include="Features\Giphy\GiphyClient.cs" />
     <Compile Include="Features\Giphy\GifHandler.cs" />
     <Compile Include="Features\Giphy\IGiphyClient.cs" />
+    <Compile Include="Features\CaptureAndRelease\CaptureAndReleaseHandler.cs" />
     <Compile Include="Features\TeamCity\TeamCityHandler.cs" />
     <Compile Include="Features\TeamCity\ITeamCityClient.cs" />
     <Compile Include="Features\TeamCity\Models\Build.cs" />
@@ -180,6 +181,8 @@
     <Compile Include="Infrastructure\ErrorHandling\Owin\SerilogErrorHandlingMiddleware.cs" />
     <Compile Include="Infrastructure\Match\IncompletePatternMatchException.cs" />
     <Compile Include="Infrastructure\Match\PatternMatch.cs" />
+    <Compile Include="Infrastructure\Match\PatternMatchContext.cs" />
+    <Compile Include="Infrastructure\Match\PatternMatchExtensions.cs" />
     <Compile Include="Infrastructure\Messages\IHandleMessage.cs" />
     <Compile Include="Infrastructure\Messages\IMessageProcessor.cs" />
     <Compile Include="Infrastructure\Messages\MessageHandler.cs" />
@@ -197,7 +200,7 @@
     <Compile Include="Infrastructure\Slack\SlackClient.cs" />
     <Compile Include="IoC.cs" />
     <Compile Include="Features\HomeModule.cs" />
-    <Compile Include="Models\SettingModel.cs" />
+    <Compile Include="Models\ViewBagModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
