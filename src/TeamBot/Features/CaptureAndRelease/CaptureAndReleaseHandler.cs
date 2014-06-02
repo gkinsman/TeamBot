@@ -20,31 +20,18 @@ namespace TeamBot.Features.CaptureAndRelease
 
             var resource = incomingMessage.Text.ToLower();
 
-            if (string.IsNullOrEmpty(resource))
-            {
-                var fields = new List<AttachmentField>();
-
-                foreach (var key in ViewBag.Keys)
-                {
-                    fields.Add(new AttachmentField
-                    {
-                        Title = key,
-                        Value = string.Format("@{0}", ViewBag[key])
-                    });
-                }
-
-                return new Attachment
-                {
-                    PreText = string.Format("@{0} what are you trying to do?", incomingMessage.UserName),
-                    Text = "List of inmates",
-                    Fields = fields,
-                    Channel = string.Format("#{0} ", incomingMessage.ChannelName),
-                    LinkNames = true
-                };
-            }
-
             if (Command == "capture")
             {
+                if (string.IsNullOrEmpty(resource))
+                {
+                    return new Message
+                    {
+                        Text = string.Format("@{0} what are you trying to capture?", incomingMessage.UserName),
+                        Channel = string.Format("#{0} ", incomingMessage.ChannelName),
+                        LinkNames = true
+                    };
+                }
+
                 string text;
                 object value;
                 if (ViewBag.TryGetValue(resource, out value) == false)
@@ -55,7 +42,7 @@ namespace TeamBot.Features.CaptureAndRelease
                 }
                 else
                 {
-                    text = string.Format("@{0} {1} was captured by @{2}", incomingMessage.UserName, incomingMessage.Text, value);
+                    text = string.Format("@{0} {1} is being held captive by @{2}", incomingMessage.UserName, incomingMessage.Text, value);
                 }
 
                 return new Message
@@ -67,7 +54,29 @@ namespace TeamBot.Features.CaptureAndRelease
                 };
             }
             else //release
-            {   
+            {
+                if (string.IsNullOrEmpty(resource))
+                {
+                    var fields = new List<AttachmentField>();
+
+                    foreach (var key in ViewBag.Keys)
+                    {
+                        fields.Add(new AttachmentField
+                        {
+                            Title = key,
+                            Value = string.Format("@{0}", ViewBag[key])
+                        });
+                    }
+
+                    return new Attachment
+                    {
+                        PreText = "Current inmates",
+                        Fields = fields,
+                        Channel = string.Format("#{0} ", incomingMessage.ChannelName),
+                        LinkNames = true
+                    };
+                }
+
                 string text;
                 object value;
                 if (ViewBag.TryGetValue(resource, out value))
