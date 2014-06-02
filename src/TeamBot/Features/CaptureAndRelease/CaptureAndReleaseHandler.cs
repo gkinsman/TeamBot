@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Web.UI.WebControls;
 using TeamBot.Infrastructure.Messages;
 using TeamBot.Infrastructure.Slack.Models;
 
@@ -19,14 +18,29 @@ namespace TeamBot.Features.CaptureAndRelease
             if (incomingMessage == null) 
                 throw new ArgumentNullException("incomingMessage");
 
-            var resource = incomingMessage.Text.ToUpper();
+            var resource = incomingMessage.Text.ToLower();
 
             if (string.IsNullOrEmpty(resource))
             {
-                return new Message
+                var fields = new List<AttachmentField>();
+
+                foreach (var key in ViewBag.Keys)
+                {
+                    fields.Add(new AttachmentField
+                    {
+                        Title = key,
+                        Value = string.Format("@{0}", ViewBag[key]),
+                        Short = true,
+                    });
+                }
+
+                return new Attachment
                 {
                     Text = string.Format("@{0} what are you trying to capture?", incomingMessage.UserName),
-                    Channel = string.Format("#{0} ", incomingMessage.ChannelName)
+                    PreText = "Current Inmates",
+                    Fields = fields,
+                    Channel = string.Format("#{0} ", incomingMessage.ChannelName),
+                    LinkNames = true
                 };
             }
 
@@ -54,30 +68,7 @@ namespace TeamBot.Features.CaptureAndRelease
                 };
             }
             else //release
-            {
-                if (string.IsNullOrEmpty(resource))
-                {
-                    var fields = new List<AttachmentField>();
-                    
-                    foreach (var key in ViewBag.Keys)
-                    {
-                        fields.Add(new AttachmentField
-                        {
-                            Title = key,
-                            Value = string.Format("@{0}", ViewBag[key]),
-                            Short = true,
-                        });
-                    }
-                    
-                    return new Attachment
-                    {
-                        PreText = "Current Inmates",
-                        Fields = fields,
-                        Channel = string.Format("#{0} ", incomingMessage.ChannelName),
-                        LinkNames = true
-                    };
-                }
-                
+            {   
                 string text;
                 object value;
                 if (ViewBag.TryGetValue(resource, out value) == false)
