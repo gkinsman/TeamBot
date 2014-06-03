@@ -89,9 +89,8 @@ namespace TeamBot.Features.CaptureAndRelease
                     }
                     else
                     {
-                        text = string.Format("@{0} is held by @{1} ask him to release {2}", incomingMessage.UserName, value, incomingMessage.Text);
+                        text = string.Format("@{0} you can't release {1} is being held captive by @{2}", incomingMessage.UserName, incomingMessage.Text, value);
                     }
-
                 }
                 else
                 {
