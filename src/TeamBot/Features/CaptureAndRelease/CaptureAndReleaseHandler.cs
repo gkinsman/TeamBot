@@ -63,8 +63,7 @@ namespace TeamBot.Features.CaptureAndRelease
                     {
                         fields.Add(new AttachmentField
                         {
-                            Title = key,
-                            Value = string.Format("@{0}", ViewBag[key])
+                            Value = string.Format("{0} is being held captive by @{1}", key, ViewBag[key])
                         });
                     }
 
