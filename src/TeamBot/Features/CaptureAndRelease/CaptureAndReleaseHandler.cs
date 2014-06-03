@@ -70,7 +70,7 @@ namespace TeamBot.Features.CaptureAndRelease
 
                     return new Attachment
                     {
-                        PreText = "Current inmates",
+                        Text = "Current inmates",
                         Fields = fields,
                         Channel = string.Format("#{0} ", incomingMessage.ChannelName),
                         LinkNames = true
@@ -81,9 +81,17 @@ namespace TeamBot.Features.CaptureAndRelease
                 object value;
                 if (ViewBag.TryGetValue(resource, out value))
                 {
-                    ViewBag.Remove(resource);
+                    if (value.ToString() == incomingMessage.UserName)
+                    {
+                        ViewBag.Remove(resource);
 
-                    text = string.Format("@everyone {0} was released by @{1}", incomingMessage.Text, incomingMessage.UserName);
+                        text = string.Format("@everyone {0} was released by @{1}", incomingMessage.Text, incomingMessage.UserName);
+                    }
+                    else
+                    {
+                        text = string.Format("@{0} is held by @{1} ask him to release {2}", incomingMessage.UserName, value, incomingMessage.Text);
+                    }
+
                 }
                 else
                 {
