@@ -92,12 +92,9 @@ namespace TeamBot.Infrastructure.Messages
 
             foreach (var message in messages)
             {
-                if (string.IsNullOrEmpty(message.Channel) == false)
-                {
-                    message.Channel = (incomingMessage.IsSlashCommand() && command != "echo")
-                        ? string.Format("@{0}", incomingMessage.UserName)
-                        : string.Format("#{0}", incomingMessage.ChannelName);
-                }
+                message.Channel = (incomingMessage.IsSlashCommand() && command != "echo")
+                    ? string.Format("@{0}", incomingMessage.UserName)
+                    : string.Format("#{0}", incomingMessage.ChannelName);
 
                 message.LinkNames = true;
                 message.UnfurlLinks = true;

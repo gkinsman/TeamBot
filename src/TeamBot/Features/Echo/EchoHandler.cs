@@ -13,7 +13,11 @@ namespace TeamBot.Features.Echo
 
         public override async Task<Message> Handle(IncomingMessage incomingMessage)
         {
-            if (incomingMessage.Text.StartsWith(incomingMessage.TriggerWord.Replace(":", "")))
+            var trigger = incomingMessage.TriggerWord != null
+                ? incomingMessage.TriggerWord.Replace(":", "")
+                : Command;
+
+            if (incomingMessage.Text.StartsWith(trigger))
             {
                 return new Message
                 {
