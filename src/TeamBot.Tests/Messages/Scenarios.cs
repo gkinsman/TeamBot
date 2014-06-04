@@ -7,10 +7,10 @@ using Raven.Client;
 using TeamBot.Infrastructure.Messages;
 using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
-using TeamBot.Tests.Bot.Handlers;
+using TeamBot.Tests.Messages.Handlers;
 using TeamBot.Tests.Specifications;
 
-namespace TeamBot.Tests.Bot
+namespace TeamBot.Tests.Messages
 {
     [Ignore]
     public class WhenProcessingIncomingMessage : AutoSpecificationForAsync<IMessageProcessor>

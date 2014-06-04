@@ -43,7 +43,6 @@ namespace TeamBot.Features.TeamCity
                     break;
             }
 
-            message.Channel = incomingMessage.ChannelName;
             return message;
         }
 

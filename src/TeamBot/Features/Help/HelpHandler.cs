@@ -37,7 +37,6 @@ namespace TeamBot.Features.Help
             {
                 Text = "Commands",
                 Fields = fields,
-                Channel = string.Format("#{0}", incomingMessage.ChannelName),
             };
         }
     }

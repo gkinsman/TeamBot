@@ -42,8 +42,7 @@ namespace TeamBot.Features.EightBall
 
             return new Message
             {
-                Text = string.Format("{1} {2} @{0}", incomingMessage.UserName, incomingMessage.Text, response[random.Next(response.Length)]),
-                Channel = string.Format("#{0}", incomingMessage.ChannelName),
+                Text = string.Format("@{0} {1}", incomingMessage.UserName, response[random.Next(response.Length)]),
             };
         }
     }

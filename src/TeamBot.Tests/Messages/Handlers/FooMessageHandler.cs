@@ -2,7 +2,7 @@
 using TeamBot.Infrastructure.Messages;
 using TeamBot.Infrastructure.Slack.Models;
 
-namespace TeamBot.Tests.Bot.Handlers
+namespace TeamBot.Tests.Messages.Handlers
 {
     public class FooMessageHandler : MessageHandler
     {

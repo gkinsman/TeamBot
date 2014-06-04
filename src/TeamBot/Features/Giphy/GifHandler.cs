@@ -32,8 +32,6 @@ namespace TeamBot.Features.Giphy
                     return new Message
                     {
                         Text = await _client.Random(),
-                        UnfurlLinks = true,
-                        Channel = string.Format("#{0}", incomingMessage.ChannelName)
                     };
                 }
 
@@ -42,8 +40,6 @@ namespace TeamBot.Features.Giphy
                     return new Message
                     {
                         Text = await _client.Random(),
-                        UnfurlLinks = true,
-                        Channel = string.Format("#{0}", incomingMessage.ChannelName)
                     };
                 }
 
@@ -59,18 +55,13 @@ namespace TeamBot.Features.Giphy
                     return new Message
                     {
                         Text = results[index],
-                        UnfurlLinks = true,
-                        Channel = string.Format("#{0}", incomingMessage.ChannelName)
                     };
                 }
                 else
                 {
                     return new Message
                     {
-                        Text =
-                            string.Format("@{0} {1}", incomingMessage.UserName, "https://i.chzbgr.com/maxW500/6153751552/hC85366D2/"),
-                        UnfurlLinks = true,
-                        Channel = string.Format("#{0}", incomingMessage.ChannelName)
+                        Text = string.Format("@{0} {1}", incomingMessage.UserName, "https://i.chzbgr.com/maxW500/6153751552/hC85366D2/"),
                     };
                 }
             }
@@ -79,7 +70,6 @@ namespace TeamBot.Features.Giphy
                 return new Message
                 {
                     Text = string.Format("@{0} Umm... something went wrong  \"gif {1}\" {2}", incomingMessage.UserName, incomingMessage.Text, ex.Message),
-                    Channel = string.Format("#{0}", incomingMessage.ChannelName)
                 };
             }
         }

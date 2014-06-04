@@ -27,8 +27,6 @@ namespace TeamBot.Features.CaptureAndRelease
                     return new Message
                     {
                         Text = string.Format("@{0} what are you trying to capture?", incomingMessage.UserName),
-                        Channel = string.Format("#{0} ", incomingMessage.ChannelName),
-                        LinkNames = true
                     };
                 }
 
@@ -38,7 +36,7 @@ namespace TeamBot.Features.CaptureAndRelease
                 {
                     ViewBag[resource] = incomingMessage.UserName;
 
-                    text = string.Format("@everyone {0} captured by @{1}", incomingMessage.Text, incomingMessage.UserName);
+                    text = string.Format("{0} captured by @{1}", incomingMessage.Text, incomingMessage.UserName);
                 }
                 else
                 {
@@ -48,8 +46,6 @@ namespace TeamBot.Features.CaptureAndRelease
                 return new Message
                 {
                     Text = text,
-                    Channel = string.Format("#{0} ", incomingMessage.ChannelName),
-                    LinkNames = true,
 
                 };
             }
@@ -71,8 +67,6 @@ namespace TeamBot.Features.CaptureAndRelease
                     {
                         Text = "Current inmates",
                         Fields = fields,
-                        Channel = string.Format("#{0} ", incomingMessage.ChannelName),
-                        LinkNames = true
                     };
                 }
 
@@ -84,7 +78,7 @@ namespace TeamBot.Features.CaptureAndRelease
                     {
                         ViewBag.Remove(resource);
 
-                        text = string.Format("@everyone {0} was released by @{1}", incomingMessage.Text, incomingMessage.UserName);
+                        text = string.Format("{0} was released by @{1}", incomingMessage.Text, incomingMessage.UserName);
                     }
                     else
                     {
@@ -99,8 +93,6 @@ namespace TeamBot.Features.CaptureAndRelease
                 return new Message
                 {
                     Text = text,
-                    Channel = string.Format("#{0} ", incomingMessage.ChannelName),
-                    LinkNames = true
                 };
             }
         }

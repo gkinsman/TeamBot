@@ -114,7 +114,8 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AutofacModules\SubstituteModule.cs" />
-    <Compile Include="Bot\Handlers\FooMessageHandler.cs" />
+    <Compile Include="Features\Echo\Scenarios.cs" />
+    <Compile Include="Messages\Handlers\FooMessageHandler.cs" />
     <Compile Include="Conventions\VerifyAllTypes.cs" />
     <Compile Include="Conventions\VerifyAllTypesRegisteredWithTheContainer.cs" />
     <Compile Include="Conventions\Container\AutofacBaseAssertion.cs" />
@@ -123,7 +124,7 @@
     <Compile Include="Conventions\Container\Lifetime.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Bot\Scenarios.cs" />
+    <Compile Include="Messages\Scenarios.cs" />
     <Compile Include="Specifications\AutoSpecificationFor.cs" />
     <Compile Include="Specifications\AutoSpecificationForAsync.cs" />
     <Compile Include="Specifications\SpecificationFor.cs" />

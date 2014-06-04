@@ -35,8 +35,6 @@ namespace TeamBot.Infrastructure.Messages
             _client = client;
         }
 
-
-
         public async Task Process(string company, string token, IncomingMessage incomingMessage)
         {
             if (incomingMessage == null)
@@ -79,10 +77,7 @@ namespace TeamBot.Infrastructure.Messages
                     {
                         messages.Add(new Message
                         {
-                            Text =
-                                string.Format("@{0} Umm, what do you mean by \"{1} {2}\"", incomingMessage.UserName,
-                                    command, incomingMessage.Text),
-                            Channel = string.Format("#{0}", incomingMessage.ChannelName)
+                            Text = string.Format("@{0} Umm, what do you mean by \"{1} {2}\"", incomingMessage.UserName, command, incomingMessage.Text)
                         });
                     }
                 }
@@ -91,23 +86,22 @@ namespace TeamBot.Infrastructure.Messages
             {
                 messages.Add(new Message
                 {
-                    Text =
-                        string.Format("@{0} Umm, something went wrong  \"{1} {2}\" {3}", incomingMessage.UserName,
-                            command, incomingMessage.Text, ex.Message),
-                    Channel = string.Format("#{0}", incomingMessage.ChannelName)
+                    Text = string.Format("@{0} Umm, something went wrong  \"{1} {2}\" {3}", incomingMessage.UserName, command, incomingMessage.Text, ex.Message)
                 });
             }
 
-            if (incomingMessage.IsSlashCommand() && command != "echo")
-            {
-                foreach (var message in messages)
-                {
-                    message.Channel = string.Format("@{0}", incomingMessage.UserName);
-                }
-            }
-
             foreach (var message in messages)
+            {
+                if (string.IsNullOrEmpty(message.Channel) == false)
+                    message.Channel = (incomingMessage.IsSlashCommand() && command != "echo") 
+                            ? string.Format("@{0}", incomingMessage.UserName)
+                            : string.Format("#{0}", incomingMessage.ChannelName);
+
+                message.LinkNames = true;
+                message.UnfurlLinks = true;
+
                 await _client.PostMessage(company, token, message);
+            }
         }
     }
 
