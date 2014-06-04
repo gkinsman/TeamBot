@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
-using Newtonsoft.Json;
 using Raven.Client;
 using Serilog;
 using TeamBot.Infrastructure.Slack;
@@ -96,9 +95,9 @@ namespace TeamBot.Infrastructure.Messages
 
             foreach (var message in messages)
             {
-                message.Channel = (incomingMessage.IsSlashCommand() && command != "echo")
-                    ? string.Format("@{0}", incomingMessage.UserName)
-                    : string.Format("#{0}", incomingMessage.ChannelName);
+                message.Channel = (incomingMessage.IsSlashCommand() )
+                    ? incomingMessage.UserId
+                    : incomingMessage.ChannelId;
 
                 message.LinkNames = true;
                 message.UnfurlLinks = true;

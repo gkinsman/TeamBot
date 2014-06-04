@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using TeamBot.Infrastructure.Messages;
 using TeamBot.Infrastructure.Slack.Models;
 
-namespace TeamBot.Features.CaptureAndRelease
+namespace TeamBot.Features.Capture
 {
-    public class CaptureAndReleaseHandler : MessageHandler
+    public class CaptureHandler : MessageHandler
     {
         public override string[] Commands()
         {

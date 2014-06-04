@@ -160,7 +160,7 @@
     <Compile Include="Features\Giphy\GiphyClient.cs" />
     <Compile Include="Features\Giphy\GifHandler.cs" />
     <Compile Include="Features\Giphy\IGiphyClient.cs" />
-    <Compile Include="Features\CaptureAndRelease\CaptureAndReleaseHandler.cs" />
+    <Compile Include="Features\Capture\CaptureHandler.cs" />
     <Compile Include="Features\TeamCity\TeamCityHandler.cs" />
     <Compile Include="Features\TeamCity\ITeamCityClient.cs" />
     <Compile Include="Features\TeamCity\Models\Build.cs" />

@@ -30,7 +30,7 @@ namespace TeamBot.Features.Help
             var fields = _scope.Resolve<IEnumerable<IHandleMessage>>()
                 .Where(t => t.GetType() != GetType())
                 .OrderBy(t => t.GetType().Name)
-                .Select(h => new AttachmentField { Value = string.Format("{0} ({1})", h.GetType().Name.Substring(0, h.GetType().Name.Length - 7), string.Join(" | ", h.Commands().OrderBy(c => c))) })
+                .Select(h => new AttachmentField { Value = string.Format("{0} ({1}) {{text}}", h.GetType().Name.Substring(0, h.GetType().Name.Length - 7), string.Join(" | ", h.Commands().OrderBy(c => c))) })
                 .ToArray();
 
             return new Attachment

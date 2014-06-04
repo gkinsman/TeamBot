@@ -31,7 +31,7 @@ namespace TeamBot.Features.Giphy
                 {
                     return new Message
                     {
-                        Text = await _client.Random(),
+                        Text = string.Format("@{0} {1}", incomingMessage.UserName, await _client.Random()),
                     };
                 }
 
@@ -39,7 +39,7 @@ namespace TeamBot.Features.Giphy
                 {
                     return new Message
                     {
-                        Text = await _client.Random(),
+                        Text = string.Format("@{0} {1}", incomingMessage.UserName, await _client.Random()),
                     };
                 }
 
@@ -54,7 +54,7 @@ namespace TeamBot.Features.Giphy
                 
                     return new Message
                     {
-                        Text = results[index],
+                        Text = string.Format("@{0} {1}", incomingMessage.UserName, results[index]),
                     };
                 }
                 else
