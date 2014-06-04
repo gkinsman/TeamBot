@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using Newtonsoft.Json;
 using Raven.Client;
+using Serilog;
 using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
 using TeamBot.Models;
@@ -37,6 +39,8 @@ namespace TeamBot.Infrastructure.Messages
 
         public async Task Process(string company, string token, IncomingMessage incomingMessage)
         {
+            Log.Debug("Processing {@incomingMessage}",  incomingMessage);
+
             if (incomingMessage == null)
                     throw new ArgumentNullException("incomingMessage");
 
