@@ -45,7 +45,8 @@ namespace TeamBot.Features
                 Token = source.token,
                 UserId = source.user_id,
                 UserName = source.user_name,
-                Command = source.command
+                Command = source.command,
+                TriggerWord = source.trigger_word
             };
 
             return message;
