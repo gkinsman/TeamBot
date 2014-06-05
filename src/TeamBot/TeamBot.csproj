@@ -158,7 +158,7 @@
     <Compile Include="Features\Echo\EchoHandler.cs" />
     <Compile Include="Features\EightBall\EightBallHandler.cs" />
     <Compile Include="Features\Giphy\GiphyClient.cs" />
-    <Compile Include="Features\Giphy\GifHandler.cs" />
+    <Compile Include="Features\Giphy\GiphyHandler.cs" />
     <Compile Include="Features\Giphy\IGiphyClient.cs" />
     <Compile Include="Features\Capture\CaptureHandler.cs" />
     <Compile Include="Features\TeamCity\TeamCityHandler.cs" />

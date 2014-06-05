@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
 using Raven.Client;
 using Serilog;
 using TeamBot.Infrastructure.Slack;
@@ -13,27 +12,27 @@ namespace TeamBot.Infrastructure.Messages
 {
     public class MessageProcessor : IMessageProcessor
     {
-        private readonly ILifetimeScope _rootScope;
         private readonly IDocumentStore _documentStore;
+        private readonly IEnumerable<IHandleMessage> _messageHandlers;
         private readonly ISlackClient _client;
 
         public MessageProcessor(
-            ILifetimeScope rootScope,
             IDocumentStore documentStore,
-            ISlackClient client)
+            ISlackClient client,
+            IEnumerable<IHandleMessage> messageHandlers)
         {
-            if (rootScope == null) 
-                throw new ArgumentNullException("rootScope");
-            
             if (documentStore == null) 
                 throw new ArgumentNullException("documentStore");
 
             if (client == null) 
                 throw new ArgumentNullException("client");
+            
+            if (messageHandlers == null) 
+                throw new ArgumentNullException("messageHandlers");
 
-            _rootScope = rootScope;
             _documentStore = documentStore;
             _client = client;
+            _messageHandlers = messageHandlers;
         }
 
         public async Task Process(string company, string token, IncomingMessage incomingMessage)
@@ -51,38 +50,33 @@ namespace TeamBot.Infrastructure.Messages
 
             try
             {
-                using (var scope = _rootScope.BeginLifetimeScope())
+                foreach (var handler in _messageHandlers.Where(handler => handler.CanHandle(command)))
                 {
-                    var handlers = scope.Resolve<IEnumerable<IHandleMessage>>();
-
-                    foreach (var handler in handlers.Where(handler => handler.CanHandle(command)))
+                    using (var session = _documentStore.OpenSession())
                     {
-                        using (var session = _documentStore.OpenSession())
-                        {
-                            var handlerType = handler.GetType().FullName;
+                        var handlerType = handler.GetType().FullName;
 
-                            var model = session.Query<ViewBagModel>()
-                                .FirstOrDefault(c => c.Company == company && c.HandlerName == handlerType);
+                        var model = session.Query<ViewBagModel>()
+                            .FirstOrDefault(c => c.Company == company && c.HandlerName == handlerType);
 
-                            if (model == null)
-                                model = new ViewBagModel(company, handlerType);
+                        if (model == null)
+                            model = new ViewBagModel(company, handlerType);
 
-                            handler.ViewBag = model.ViewBag;
+                        handler.ViewBag = model.ViewBag;
 
-                            messages.Add(await handler.Handle(incomingMessage));
+                        messages.Add(await handler.Handle(incomingMessage));
 
-                            session.Store(model);
-                            session.SaveChanges();
-                        }
+                        session.Store(model);
+                        session.SaveChanges();
                     }
+                }
 
-                    if (messages.Any() == false)
+                if (messages.Any() == false)
+                {
+                    messages.Add(new Message
                     {
-                        messages.Add(new Message
-                        {
-                            Text = string.Format("@{0} Umm, what do you mean by \"{1} {2}\"", incomingMessage.UserName, command, incomingMessage.Text)
-                        });
-                    }
+                        Text = string.Format("@{0} Umm, what do you mean by \"{1} {2}\"", incomingMessage.UserName, command, incomingMessage.Text)
+                    });
                 }
             }
             catch (Exception ex)

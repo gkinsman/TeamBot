@@ -24,20 +24,6 @@ namespace TeamBot.Tests.Messages
         private string _token;
         private IDocumentSession _session;
 
-        [SetUp]
-        public override void SetUp()
-        {
-            var builder = new ContainerBuilder();
-            
-            builder.RegisterType(typeof(FooMessageHandler))
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
-
-            _container = builder.Build();
-
-            base.SetUp();
-        }
-
         protected override async Task<IMessageProcessor> Given()
         {
             _company = string.Format("comapy{0}", Fixture.Create<string>());
@@ -47,7 +33,7 @@ namespace TeamBot.Tests.Messages
             _documentStore = Fixture.Freeze<IDocumentStore>();
             _documentStore.OpenSession().Returns(_session);
 
-            return new MessageProcessor(_container, _documentStore, _client);
+            return new MessageProcessor(_documentStore, _client, new [] { Fixture.Create<FooMessageHandler>() });
         }
 
         protected override async Task When()

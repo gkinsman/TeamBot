@@ -9,12 +9,16 @@ namespace TeamBot.Features
 {
     public class BotModule : NancyModule
     {
+        private readonly IMessageProcessor _messageProcessor;
+
         public BotModule(
             IMessageProcessor messageProcessor)
             : base("/bot")
         {
             if (messageProcessor == null) 
                 throw new ArgumentNullException("messageProcessor");
+
+            _messageProcessor = messageProcessor;
 
             Post["/", true] = async (ctx, ct) =>
             {
@@ -24,10 +28,10 @@ namespace TeamBot.Features
 
                 string company = Request.Query.Company;
                 string token = Request.Query.Token;
-
+ 
                 await Task.Run(async () =>
                 {
-                    await messageProcessor.Process(company, token, incomingMessage);
+                    await _messageProcessor.Process(company, token, incomingMessage);
                 });
 
                 return new Response().WithStatusCode(HttpStatusCode.OK);
