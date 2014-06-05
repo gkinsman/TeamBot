@@ -18,13 +18,13 @@ namespace TeamBot.Features.WhosTurn
 
         public override async Task<Message> Handle(IncomingMessage incomingMessage)
         {
-            var values = incomingMessage.Text.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);
-
+            var names = incomingMessage.Text.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);
+            
             var users = new List<string>();
 
             if (Command == "users")
             {
-                users.AddRange(values);
+                users.AddRange(names.Where(name => name.ToLower() != BotName));
                 ViewBag[UsersKey] = string.Join(",", users);
                 
                 return new Message

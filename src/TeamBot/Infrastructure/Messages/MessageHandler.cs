@@ -12,6 +12,8 @@ namespace TeamBot.Infrastructure.Messages
 
         public string Command { get; private set; }
 
+        public string BotName { get; set; }
+
         private IDictionary<string, object> _viewBag; 
         public IDictionary<string, object> ViewBag 
         { 

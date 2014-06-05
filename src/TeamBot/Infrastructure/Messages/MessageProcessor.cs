@@ -43,6 +43,11 @@ namespace TeamBot.Infrastructure.Messages
                     throw new ArgumentNullException("incomingMessage");
 
             var values = incomingMessage.Text.Split(new [] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var botName = incomingMessage.IsSlashCommand()
+                ? incomingMessage.Command.Substring(1)
+                : values[0].ToLower().Replace(":", "");
+            
             var command = values[incomingMessage.Command == null ? 1 : 0].ToLower();
                 incomingMessage.Text = string.Join(" ", values.Skip(incomingMessage.Command == null ? 2 : 1));
 
@@ -62,6 +67,7 @@ namespace TeamBot.Infrastructure.Messages
                         if (model == null)
                             model = new ViewBagModel(company, handlerType);
 
+                        handler.BotName = botName;
                         handler.ViewBag = model.ViewBag;
 
                         messages.Add(await handler.Handle(incomingMessage));

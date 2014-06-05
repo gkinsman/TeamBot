@@ -8,9 +8,11 @@ namespace TeamBot.Infrastructure.Messages
     {
         string[] Commands();
 
-        IDictionary<string, object> ViewBag { get; set; }
-
         string Command { get; }
+        
+        string BotName { get; set; }
+        
+        IDictionary<string, object> ViewBag { get; set; }
 
         bool CanHandle(string command);
 
