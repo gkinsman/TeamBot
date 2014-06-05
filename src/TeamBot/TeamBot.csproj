@@ -168,6 +168,7 @@
     <Compile Include="Features\TeamCity\TeamCityClient.cs" />
     <Compile Include="Features\BotModule.cs" />
     <Compile Include="Features\Help\HelpHandler.cs" />
+    <Compile Include="Features\WhosTurn\WhosTurnHandler.cs" />
     <Compile Include="Infrastructure\Clock\IClock.cs" />
     <Compile Include="Infrastructure\Clock\SystemClock.cs" />
     <Compile Include="Infrastructure\Environment\AppEnvironment.cs" />
