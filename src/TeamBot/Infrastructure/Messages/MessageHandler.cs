@@ -12,7 +12,19 @@ namespace TeamBot.Infrastructure.Messages
 
         public string Command { get; private set; }
 
-        public string BotName { get; set; }
+        private string _botName;
+
+        public string BotName
+        {
+            get { return _botName; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                _botName = value;
+            }
+        }
 
         private IDictionary<string, object> _viewBag; 
         public IDictionary<string, object> ViewBag 
