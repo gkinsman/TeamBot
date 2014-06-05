@@ -35,7 +35,7 @@ namespace TeamBot.Features.Help
 
             return new Attachment
             {
-                PreText = "Availible Commands",
+                Text = "Availible Commands",
                 Fields = fields,
             };
         }
