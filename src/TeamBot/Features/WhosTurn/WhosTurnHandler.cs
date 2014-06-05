@@ -51,7 +51,7 @@ namespace TeamBot.Features.WhosTurn
 
             return new Message
             {
-                Text = string.Format("@{0}'s {1}", user, incomingMessage.Text)
+                Text = string.Format("@{0} {1}", user, incomingMessage.Text)
             };
         }
     }
