@@ -17,7 +17,7 @@ namespace TeamBot.Features.Echo
             {
                 return new Message
                 {
-                    Text = string.Format("@{0} I speak for myself thank very much!", incomingMessage.UserName),
+                    Text = string.Format("@{0} I speak for myself thank you very much!", incomingMessage.UserName),
                 };
             }
 
