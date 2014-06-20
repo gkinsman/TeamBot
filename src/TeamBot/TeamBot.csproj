@@ -152,14 +152,11 @@
     <Compile Include="AutofacModules\JsonSerializationModule.cs" />
     <Compile Include="AutofacModules\MessageModule.cs" />
     <Compile Include="AutofacModules\RavenModule.cs" />
-    <Compile Include="AutofacModules\GiphyModule.cs" />
     <Compile Include="AutofacModules\SlackModule.cs" />
     <Compile Include="AutofacModules\TeamCityModule.cs" />
     <Compile Include="Features\Echo\EchoHandler.cs" />
     <Compile Include="Features\EightBall\EightBallHandler.cs" />
-    <Compile Include="Features\Giphy\GiphyClient.cs" />
     <Compile Include="Features\Giphy\GiphyHandler.cs" />
-    <Compile Include="Features\Giphy\IGiphyClient.cs" />
     <Compile Include="Features\Capture\CaptureHandler.cs" />
     <Compile Include="Features\TeamCity\TeamCityHandler.cs" />
     <Compile Include="Features\TeamCity\ITeamCityClient.cs" />
@@ -168,6 +165,7 @@
     <Compile Include="Features\TeamCity\TeamCityClient.cs" />
     <Compile Include="Features\BotModule.cs" />
     <Compile Include="Features\Help\HelpHandler.cs" />
+    <Compile Include="Features\Weather\WeatherHandler.cs" />
     <Compile Include="Features\WhosTurn\WhosTurnHandler.cs" />
     <Compile Include="Infrastructure\Clock\IClock.cs" />
     <Compile Include="Infrastructure\Clock\SystemClock.cs" />
