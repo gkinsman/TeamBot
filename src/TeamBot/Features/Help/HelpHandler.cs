@@ -13,15 +13,14 @@ namespace TeamBot.Features.Help
 {
     public class HelpHandler : SlackMessageHandler
     {
-        private readonly IEnumerable<IHandleMessage> _handlers;
+        private readonly ILifetimeScope _scope;
 
-        public HelpHandler(ISlackClient slack, IEnumerable<IHandleMessage> handlers)
+        public HelpHandler(ISlackClient slack, ILifetimeScope scope)
             : base(slack)
         {
-            if (handlers == null)
-                throw new ArgumentNullException("handlers");
+            if (scope == null) throw new ArgumentNullException("scope");
 
-            _handlers = handlers;
+            _scope = scope;
         }
 
         public override async Task Handle(IncomingMessage incomingMessage)
@@ -44,7 +43,7 @@ namespace TeamBot.Features.Help
 
         private async Task ListFeaturesAsync(IncomingMessage incomingMessage)
         {
-            var fields = _handlers
+            var fields = _scope.Resolve<IEnumerable<IHandleMessage>>()
                 .Where(t => t.GetType() != GetType() && t.GetType() != typeof(TeamCityHandler))
                 .OrderBy(t => t.GetType().Name)
                 .Select(h => new AttachmentField { Value = h.Help() })
