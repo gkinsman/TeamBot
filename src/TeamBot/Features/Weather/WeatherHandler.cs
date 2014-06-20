@@ -22,7 +22,7 @@ namespace TeamBot.Features.Weather
 
         public override string Help()
         {
-            return "{botname} weather {city}";
+            return "weather {city}";
         }
 
         public override async Task Handle(IncomingMessage incomingMessage)

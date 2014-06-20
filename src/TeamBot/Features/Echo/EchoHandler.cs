@@ -17,7 +17,7 @@ namespace TeamBot.Features.Echo
 
         public override string Help()
         {
-            return "{botname} echo {message}";
+            return "echo {message}";
         }
 
         public override async Task Handle(IncomingMessage incomingMessage)

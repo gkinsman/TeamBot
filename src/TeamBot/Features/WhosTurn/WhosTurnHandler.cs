@@ -20,7 +20,7 @@ namespace TeamBot.Features.WhosTurn
 
         public override string Help()
         {
-            return "{botname} who (is|turn) {question}";
+            return "who (is|turn) {question}";
         }
 
         public override async Task Handle(IncomingMessage incomingMessage)

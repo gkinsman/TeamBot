@@ -17,7 +17,7 @@ namespace TeamBot.Features.Capture
 
         public override string Help()
         {
-            return "{botname} (capture|release) {resource}";
+            return "(capture|release) {resource}";
         }
 
         public override async Task Handle(IncomingMessage incomingMessage)
