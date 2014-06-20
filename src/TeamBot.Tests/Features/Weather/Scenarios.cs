@@ -37,7 +37,7 @@ namespace TeamBot.Tests.Features.Weather
         {
             public override string Request
             {
-                get { return "forecast.io apikey aecabcef7974ee5c21f74e0a7943bc44"; }
+                get { return "forecastio apikey aecabcef7974ee5c21f74e0a7943bc44"; }
             }
 
             public override string ExpectedResponse
