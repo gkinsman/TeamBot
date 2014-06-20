@@ -6,5 +6,12 @@
         {
             return incomingMessage.Command != null;
         }
+
+        public static string ReplyTo(this IncomingMessage incomingMessage)
+        {
+            return incomingMessage.IsSlashCommand()
+                ? incomingMessage.UserId
+                : incomingMessage.ChannelId;
+        }
     }
 }

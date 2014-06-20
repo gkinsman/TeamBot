@@ -1,30 +1,46 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Raven.Client;
 using TeamBot.Infrastructure.Messages;
+using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
 
 namespace TeamBot.Features.Echo
 {
-    public class EchoHandler : MessageHandler
+    public class EchoHandler : SlackMessageHandler
     {
-        public override string[] Commands()
+        public EchoHandler(ISlackClient slack) 
+            : base(slack)
         {
-            return new [] { "echo" };
         }
 
-        public override async Task<Message> Handle(IncomingMessage incomingMessage)
+        public override async Task Handle(IncomingMessage incomingMessage)
         {
-            if (incomingMessage.Text.StartsWith(BotName))
-            {
-                return new Message
-                {
-                    Text = string.Format("@{0} I speak for myself thank you very much!", incomingMessage.UserName),
-                };
-            }
+            if (incomingMessage == null)
+                throw new ArgumentNullException("incomingMessage");
 
-            return new Message
+            var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task>>
             {
-                Text = incomingMessage.Text,
+                {"echo (.*)", async (message, match) => await EchoAsync(message, match.Groups[1].Value)},
             };
+
+            foreach (var pattern in patterns)
+            {
+                var match = Regex.Match(incomingMessage.Text, pattern.Key, RegexOptions.IgnoreCase);
+                if (match.Length > 0)
+                    await pattern.Value(incomingMessage, match);
+            }
+        }
+
+        private async Task EchoAsync(IncomingMessage incomingMessage, string input)
+        {
+            var response = incomingMessage.Text.StartsWith(incomingMessage.BotName)
+                    ? string.Format("@{0} I speak for myself thank you very much!", incomingMessage.UserName)
+                    : input;
+
+            await Slack.SendAsync(incomingMessage.ReplyTo(), response);
         }
     }
 }

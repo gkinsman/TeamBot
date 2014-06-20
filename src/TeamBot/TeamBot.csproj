@@ -186,7 +186,7 @@
     <Compile Include="Infrastructure\Match\PatternMatchExtensions.cs" />
     <Compile Include="Infrastructure\Messages\IHandleMessage.cs" />
     <Compile Include="Infrastructure\Messages\IMessageProcessor.cs" />
-    <Compile Include="Infrastructure\Messages\MessageHandler.cs" />
+    <Compile Include="Infrastructure\Messages\SlackMessageHandler.cs" />
     <Compile Include="Infrastructure\Messages\MessageProcessor.cs" />
     <Compile Include="Infrastructure\Raven\DocumentStoreBuilder.cs" />
     <Compile Include="Infrastructure\Security\IUserIdentityEnricher.cs" />
@@ -199,6 +199,7 @@
     <Compile Include="Infrastructure\Slack\Models\Message.cs" />
     <Compile Include="Infrastructure\Slack\Models\SlackExtensions.cs" />
     <Compile Include="Infrastructure\Slack\SlackClient.cs" />
+    <Compile Include="Infrastructure\Slack\SlackContext.cs" />
     <Compile Include="IoC.cs" />
     <Compile Include="Features\HomeModule.cs" />
     <Compile Include="Models\ViewBagModel.cs" />

@@ -38,9 +38,29 @@
     <Reference Include="Autofac">
       <HintPath>..\..\packages\Autofac.3.4.0\lib\net40\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Data.Edm">
+      <HintPath>..\..\packages\Microsoft.Data.Edm.5.6.1\lib\net40\Microsoft.Data.Edm.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Data.OData">
+      <HintPath>..\..\packages\Microsoft.Data.OData.5.6.1\lib\net40\Microsoft.Data.OData.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Data.Services.Client">
+      <HintPath>..\..\packages\Microsoft.Data.Services.Client.5.6.1\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Owin, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Configuration">
+      <HintPath>..\..\packages\Microsoft.WindowsAzure.ConfigurationManager.2.0.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Storage">
+      <HintPath>..\..\packages\WindowsAzure.Storage.4.0.1\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Nancy, Version=0.22.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -80,13 +100,21 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\AutoFixture.Idioms.3.18.8\lib\net40\Ploeh.AutoFixture.Idioms.dll</HintPath>
     </Reference>
-    <Reference Include="Raven.Abstractions, Version=2.5.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\RavenDB.Client.2.5.2879\lib\net45\Raven.Abstractions.dll</HintPath>
+    <Reference Include="Raven.Abstractions">
+      <HintPath>..\..\packages\RavenDB.Database.2.5.2879\lib\net45\Raven.Abstractions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Raven.Client.Embedded">
+      <HintPath>..\..\packages\RavenDB.Embedded.2.5.2879\lib\net45\Raven.Client.Embedded.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Raven.Client.Lightweight, Version=2.5.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\RavenDB.Client.2.5.2879\lib\net45\Raven.Client.Lightweight.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Database">
+      <HintPath>..\..\packages\RavenDB.Database.2.5.2879\lib\net45\Raven.Database.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Serilog, Version=1.3.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -103,6 +131,10 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Spatial">
+      <HintPath>..\..\packages\System.Spatial.5.6.1\lib\net40\System.Spatial.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -114,8 +146,12 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AutofacModules\SubstituteModule.cs" />
+    <Compile Include="Features\Capture\Scenarios.cs" />
+    <Compile Include="Features\HandlerScenarioBase.cs" />
     <Compile Include="Features\Echo\Scenarios.cs" />
-    <Compile Include="Messages\Handlers\FooMessageHandler.cs" />
+    <Compile Include="Features\EightBall\Scenarios.cs" />
+    <Compile Include="Features\WhosTurn\Scenarios.cs" />
+    <Compile Include="Messages\Handlers\FooHandler.cs" />
     <Compile Include="Conventions\VerifyAllTypes.cs" />
     <Compile Include="Conventions\VerifyAllTypesRegisteredWithTheContainer.cs" />
     <Compile Include="Conventions\Container\AutofacBaseAssertion.cs" />

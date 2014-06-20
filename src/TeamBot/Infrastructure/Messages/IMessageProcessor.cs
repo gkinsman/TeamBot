@@ -5,6 +5,6 @@ namespace TeamBot.Infrastructure.Messages
 {
     public interface IMessageProcessor
     {
-        Task Process(string company, string token, IncomingMessage incomingMessage);
+        Task Process(IncomingMessage incomingMessage);
     }
 }

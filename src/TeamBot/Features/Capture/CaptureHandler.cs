@@ -1,100 +1,107 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TeamBot.Infrastructure.Messages;
+using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
 
 namespace TeamBot.Features.Capture
 {
-    public class CaptureHandler : MessageHandler
+    public class CaptureHandler : SlackMessageHandler
     {
-        public override string[] Commands()
+        public CaptureHandler(ISlackClient slack) 
+            : base(slack)
         {
-            return new [] { "capture", "release" };
         }
 
-        public override async Task<Message> Handle(IncomingMessage incomingMessage)
+        public override async Task Handle(IncomingMessage incomingMessage)
         {
             if (incomingMessage == null) 
                 throw new ArgumentNullException("incomingMessage");
 
-            var resource = incomingMessage.Text.ToLower();
+            var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task>> 
+		    {
+                { "capture (.*)", async (message, match) => await CaptureAsync(message, match.Groups[1].Value) },
+			    { "release (.*)", async (message, match) => await ReleaseAsync(message, match.Groups[1].Value) },
+		    };
 
-            if (Command == "capture")
+            foreach (var pattern in patterns)
             {
-                if (string.IsNullOrEmpty(resource))
+                var match = Regex.Match(incomingMessage.Text, pattern.Key, RegexOptions.IgnoreCase);
+                if (match.Length > 0)
+                    await pattern.Value(incomingMessage, match);
+            }
+        }
+
+        private async Task CaptureAsync(IncomingMessage incomingMessage, string resource)
+        {
+            if (string.IsNullOrEmpty(resource))
+            {
+                await Slack.SendAsync(incomingMessage.ReplyTo(), string.Format("@{0} what are you trying to capture?", incomingMessage.UserName));
+                return;
+            }
+
+            string text;
+            object value;
+            if (Brain.TryGetValue(resource, out value) == false)
+            {
+                Brain[resource] = incomingMessage.UserName;
+
+                text = string.Format("{0} captured by @{1}", resource, incomingMessage.UserName);
+            }
+            else
+            {
+                text = string.Format("@{0} {1} is being held captive by @{2}", incomingMessage.UserName, resource, value);
+            }
+
+            await Slack.SendAsync(incomingMessage.ReplyTo(), text);
+        }
+
+        private async Task ReleaseAsync(IncomingMessage incomingMessage, string resource)
+        {
+            if (string.IsNullOrEmpty(resource))
+            {
+                var fields = new List<AttachmentField>();
+
+                foreach (var key in Brain.Keys)
                 {
-                    return new Message
+                    fields.Add(new AttachmentField
                     {
-                        Text = string.Format("@{0} what are you trying to capture?", incomingMessage.UserName),
-                    };
+                        Value = string.Format("{0} is being held captive by @{1}", key, Brain[key])
+                    });
                 }
 
-                string text;
-                object value;
-                if (ViewBag.TryGetValue(resource, out value) == false)
+                await Slack.PostAsync(new Attachment
                 {
-                    ViewBag[resource] = incomingMessage.UserName;
+                    Channel = incomingMessage.ReplyTo(),
+                    Text = "Current inmates",
+                    Fields = fields,
+                });
+                return;
+            }
 
-                    text = string.Format("{0} captured by @{1}", incomingMessage.Text, incomingMessage.UserName);
+            string text;
+            object value;
+            if (Brain.TryGetValue(resource, out value))
+            {
+                if (value.ToString() == incomingMessage.UserName)
+                {
+                    Brain.Remove(resource);
+
+                    text = string.Format("{0} was released by @{1}", resource, incomingMessage.UserName);
                 }
                 else
                 {
-                    text = string.Format("@{0} {1} is being held captive by @{2}", incomingMessage.UserName, incomingMessage.Text, value);
+                    text = string.Format("@{0} you can't release {1} can only be released by @{2}", incomingMessage.UserName, resource, value);
                 }
-
-                return new Message
-                {
-                    Text = text,
-
-                };
             }
-            else //release
+            else
             {
-                if (string.IsNullOrEmpty(resource))
-                {
-                    var fields = new List<AttachmentField>();
-
-                    foreach (var key in ViewBag.Keys)
-                    {
-                        fields.Add(new AttachmentField
-                        {
-                            Value = string.Format("{0} is being held captive by @{1}", key, ViewBag[key])
-                        });
-                    }
-
-                    return new Attachment
-                    {
-                        Text = "Current inmates",
-                        Fields = fields,
-                    };
-                }
-
-                string text;
-                object value;
-                if (ViewBag.TryGetValue(resource, out value))
-                {
-                    if (value.ToString() == incomingMessage.UserName)
-                    {
-                        ViewBag.Remove(resource);
-
-                        text = string.Format("{0} was released by @{1}", incomingMessage.Text, incomingMessage.UserName);
-                    }
-                    else
-                    {
-                        text = string.Format("@{0} you can't release {1} can only be released by @{2}", incomingMessage.UserName, incomingMessage.Text, value);
-                    }
-                }
-                else
-                {
-                    text = string.Format("@{0} {1} has not been captured", incomingMessage.UserName, incomingMessage.Text);
-                }
-
-                return new Message
-                {
-                    Text = text,
-                };
+                text = string.Format("@{0} {1} has not been captured", incomingMessage.UserName, resource);
             }
+
+            await Slack.SendAsync(incomingMessage.ReplyTo(), text);
         }
     }
 }

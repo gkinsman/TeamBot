@@ -1,21 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
 
 namespace TeamBot.Infrastructure.Messages
 {
     public interface IHandleMessage
     {
-        string[] Commands();
+        IDictionary<string, object> Brain { get; set; }
 
-        string Command { get; }
-        
-        string BotName { get; set; }
-        
-        IDictionary<string, object> ViewBag { get; set; }
+        ISlackClient Slack { get; }
 
-        bool CanHandle(string command);
-
-        Task<Message> Handle(IncomingMessage incomingMessage);
+        Task Handle(IncomingMessage incomingMessage);
     }
 }

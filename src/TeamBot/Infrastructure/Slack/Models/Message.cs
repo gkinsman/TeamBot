@@ -4,6 +4,12 @@ namespace TeamBot.Infrastructure.Slack.Models
 {
     public class Message
     {
+        public Message()
+        {
+            UnfurlLinks = true;
+            LinkNames = true;
+        }
+
         [JsonProperty(PropertyName = "text")]
         public string Text { get; set; }
 

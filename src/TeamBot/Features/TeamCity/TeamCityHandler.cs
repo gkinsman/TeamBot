@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Raven.Client;
 using TeamBot.Infrastructure.Messages;
+using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
 
 namespace TeamBot.Features.TeamCity
 {
-    public class TeamCityHandler : MessageHandler
+    public class TeamCityHandler : SlackMessageHandler
     {
         private readonly ITeamCityClient _client;
 
-        public TeamCityHandler(ITeamCityClient client)
+        public TeamCityHandler(ISlackClient slack, ITeamCityClient client)
+            : base(slack)
         {
             if (client == null) 
                 throw new ArgumentNullException("client");
@@ -18,12 +21,7 @@ namespace TeamBot.Features.TeamCity
             _client = client;
         }
 
-        public override string[] Commands()
-        {
-            return new[] { "teamcity" };
-        }
-
-        public override async Task<Message> Handle(IncomingMessage incomingMessage)
+        public override async Task Handle(IncomingMessage incomingMessage)
         {
             var values = incomingMessage.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             var text = string.Join(" ", values.Skip(1));
@@ -42,8 +40,6 @@ namespace TeamBot.Features.TeamCity
                     message = new Message { Text = string.Format("") };
                     break;
             }
-
-            return message;
         }
 
         private async Task<Message> GetBuildStatus(string filters)

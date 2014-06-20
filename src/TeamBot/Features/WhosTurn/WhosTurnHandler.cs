@@ -1,58 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TeamBot.Infrastructure.Messages;
+using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
 
 namespace TeamBot.Features.WhosTurn
 {
-    public class WhosTurnHandler : MessageHandler
+    public class WhosTurnHandler : SlackMessageHandler
     {
-        private const string UsersKey = "users";
+        public const string UsersKey = "users";
 
-        public override string[] Commands()
+        public WhosTurnHandler(ISlackClient slack) 
+            : base(slack)
         {
-            return new[] { "who", "users" };
         }
 
-        public override async Task<Message> Handle(IncomingMessage incomingMessage)
+        public override async Task Handle(IncomingMessage incomingMessage)
         {
-            var names = incomingMessage.Text.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);
-            
-            var users = new List<string>();
+            if (incomingMessage == null)
+                throw new ArgumentNullException("incomingMessage");
 
-            if (Command == "users")
+            var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task>>
+		    {
+                {  @"who (is|turn) @?([\w .\-]+)\?*$", async (message, match) => await TurnAsync(message, match.Groups[2].Value) },
+                {  @"load users (.*)", async (message, match) => await LoadAsync(message, match.Groups[1].Value) },
+		    };
+
+            foreach (var pattern in patterns)
             {
-                users.AddRange(names.Where(name => name.ToLower() != BotName));
-                ViewBag[UsersKey] = string.Join(",", users);
-                
-                return new Message
-                {
-                    Text = string.Format("@{0} users loaded. [{1}]", incomingMessage.UserName, string.Join(", ", users))
-                };
+                var match = Regex.Match(incomingMessage.Text, pattern.Key, RegexOptions.IgnoreCase);
+                if (match.Length > 0)
+                    await pattern.Value(incomingMessage, match);
             }
+        }
 
+        private async Task LoadAsync(IncomingMessage incomingMessage, string input)
+        {
+            var users = new List<string>();
+            var names = input.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            
+            users.AddRange(names.Where(name => name.ToLower() != incomingMessage.BotName));
+            Brain[UsersKey] = string.Join(",", users);
+
+            var response = string.Format("@{0} users loaded. [{1}]", incomingMessage.UserName, string.Join(", ", users));
+            await Slack.SendAsync(incomingMessage.ReplyTo(), response);
+        }
+
+        private async Task TurnAsync(IncomingMessage incomingMessage, string input)
+        {   
+            var users = new List<string>();
             object value;
-            if (ViewBag.TryGetValue(UsersKey, out value))
+            if (Brain.TryGetValue(UsersKey, out value))
             {
-                users.AddRange(value.ToString().Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries));
+                users.AddRange(value.ToString().Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries));
             }
             else
             {
-                return new Message
-                {
-                    Text = string.Format("@{0} no users loaded.", incomingMessage.UserName)
-                };   
-            } 
-            
+                await Slack.SendAsync(incomingMessage.ReplyTo(), string.Format("@{0} no users loaded.", incomingMessage.UserName));
+                return;
+            }
+
             var random = new Random();
             var user = users[random.Next(users.Count())];
 
-            return new Message
-            {
-                Text = string.Format("@{0} {1}", user, incomingMessage.Text)
-            };
+            var response = string.Format("@{0} is {1}", user, input);
+            await Slack.SendAsync(incomingMessage.ReplyTo(), response);
         }
     }
 }

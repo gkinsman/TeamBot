@@ -12,30 +12,30 @@ namespace TeamBot.Infrastructure.Messages
 {
     public class MessageProcessor : IMessageProcessor
     {
-        private readonly IDocumentStore _documentStore;
         private readonly IEnumerable<IHandleMessage> _messageHandlers;
         private readonly ISlackClient _client;
+        private readonly IDocumentStore _documentStore;
 
         public MessageProcessor(
-            IDocumentStore documentStore,
             ISlackClient client,
+            IDocumentStore documentStore,
             IEnumerable<IHandleMessage> messageHandlers)
         {
-            if (documentStore == null) 
-                throw new ArgumentNullException("documentStore");
-
             if (client == null) 
                 throw new ArgumentNullException("client");
             
+            if (documentStore == null) 
+                throw new ArgumentNullException("documentStore");
+
             if (messageHandlers == null) 
                 throw new ArgumentNullException("messageHandlers");
 
-            _documentStore = documentStore;
             _client = client;
+            _documentStore = documentStore;
             _messageHandlers = messageHandlers;
         }
 
-        public async Task Process(string company, string token, IncomingMessage incomingMessage)
+        public async Task Process(IncomingMessage incomingMessage)
         {
             Log.Debug("Processing {@incomingMessage}",  incomingMessage);
 
@@ -47,65 +47,47 @@ namespace TeamBot.Infrastructure.Messages
             var botName = incomingMessage.IsSlashCommand()
                 ? incomingMessage.Command.Substring(1)
                 : values[0].ToLower().Replace(":", "");
-            
+
+            incomingMessage.BotName = botName;
+
             var command = values[incomingMessage.Command == null ? 1 : 0].ToLower();
-                incomingMessage.Text = string.Join(" ", values.Skip(incomingMessage.Command == null ? 2 : 1));
+            incomingMessage.Text = string.Join(" ", values.Skip(incomingMessage.IsSlashCommand() ? 0 : 1));
 
-            var messages = new List<Message>();
-
+            Exception exception = null;
             try
             {
-                foreach (var handler in _messageHandlers.Where(handler => handler.CanHandle(command)))
+                foreach (var handler in _messageHandlers)
                 {
                     using (var session = _documentStore.OpenSession())
                     {
                         var handlerType = handler.GetType().FullName;
+                        var company = SlackContext.Current.Company;
+                        var models = session.Query<ViewBagModel>();
 
-                        var model = session.Query<ViewBagModel>()
-                            .FirstOrDefault(c => c.Company == company && c.HandlerName == handlerType);
+                        var model = models.FirstOrDefault(c => c.Company == company && c.HandlerName == handlerType)
+                                    ?? new ViewBagModel(company, handlerType);
 
-                        if (model == null)
-                            model = new ViewBagModel(company, handlerType);
+                        handler.Brain = model.ViewBag;
 
-                        handler.BotName = botName;
-                        handler.ViewBag = model.ViewBag;
-
-                        messages.Add(await handler.Handle(incomingMessage));
+                        await handler.Handle(incomingMessage);
 
                         session.Store(model);
                         session.SaveChanges();
                     }
                 }
-
-                if (messages.Any() == false)
-                {
-                    messages.Add(new Message
-                    {
-                        Text = string.Format("@{0} Umm, what do you mean by \"{1} {2}\"", incomingMessage.UserName, command, incomingMessage.Text)
-                    });
-                }
             }
             catch (Exception ex)
             {
-                messages.Add(new Message
-                {
-                    Text = string.Format("@{0} Umm, something went wrong  \"{1} {2}\" {3}", incomingMessage.UserName, command, incomingMessage.Text, ex.Message)
-                });
+                exception = ex;
             }
 
-            foreach (var message in messages)
+            if (exception != null)
             {
-                message.Channel = (incomingMessage.IsSlashCommand() )
-                    ? incomingMessage.UserId
-                    : incomingMessage.ChannelId;
+                var response = string.Format("@{0} Umm, something went wrong  \"{1} {2}\" {3}", incomingMessage.UserName,
+                    command, incomingMessage.Text, exception.Message);
 
-                message.LinkNames = true;
-                message.UnfurlLinks = true;
-
-                await _client.PostMessage(company, token, message);
+                await _client.SendAsync(incomingMessage.ReplyTo(), response);
             }
         }
     }
-
-   
 }

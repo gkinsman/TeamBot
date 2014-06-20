@@ -30,5 +30,8 @@ namespace TeamBot.Infrastructure.Slack.Models
 
         [JsonProperty(PropertyName = "command")]
         public string Command { get; set; }
+
+        [JsonProperty(PropertyName = "bot_name")]
+        public string BotName { get; set; }
     }
 }

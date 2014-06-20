@@ -6,7 +6,6 @@ namespace TeamBot.Tests.Specifications
 {
     [TestFixture]
     public abstract class SpecificationForAsync<T>
-        where T : class
     {
         protected T Subject;
 
@@ -31,7 +30,7 @@ namespace TeamBot.Tests.Specifications
         {
             var disposable = Subject as IDisposable;
             if (disposable != null) disposable.Dispose();
-            Subject = null;
+            Subject = default(T);
         }
     }
 }

@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using TeamBot.Infrastructure.Messages;
+using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
 
 namespace TeamBot.Features.Help
 {
-    public class HelpHandler : MessageHandler
+    public class HelpHandler : SlackMessageHandler
     {
         private readonly ILifetimeScope _scope;
 
-        public HelpHandler(ILifetimeScope scope)
+        public HelpHandler(ISlackClient slack, ILifetimeScope scope)
+            : base(slack)
         {
             if (scope == null) 
                 throw new ArgumentNullException("scope");
@@ -20,13 +20,9 @@ namespace TeamBot.Features.Help
             _scope = scope;
         }
 
-        public override string[] Commands()
+        public override async Task Handle(IncomingMessage incomingMessage)
         {
-            return new[] { "help" };
-        }
-
-        public override async Task<Message> Handle(IncomingMessage incomingMessage)
-        {
+            /*
             var fields = _scope.Resolve<IEnumerable<IHandleMessage>>()
                 .Where(t => t.GetType() != GetType())
                 .OrderBy(t => t.GetType().Name)
@@ -38,6 +34,7 @@ namespace TeamBot.Features.Help
                 Text = "Availible Commands",
                 Fields = fields,
             };
+            */
         }
     }
 }

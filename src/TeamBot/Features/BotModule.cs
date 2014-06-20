@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Nancy;
 using Nancy.ModelBinding;
 using TeamBot.Infrastructure.Messages;
+using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
 
 namespace TeamBot.Features
@@ -11,8 +12,7 @@ namespace TeamBot.Features
     {
         private readonly IMessageProcessor _messageProcessor;
 
-        public BotModule(
-            IMessageProcessor messageProcessor)
+        public BotModule(IMessageProcessor messageProcessor)
             : base("/bot")
         {
             if (messageProcessor == null) 
@@ -28,10 +28,12 @@ namespace TeamBot.Features
 
                 string company = Request.Query.Company;
                 string token = Request.Query.Token;
- 
+
+                SlackContext.Current = new SlackContext(company, token);
+
                 await Task.Run(async () =>
                 {
-                    await _messageProcessor.Process(company, token, incomingMessage);
+                    await _messageProcessor.Process(incomingMessage);
                 });
 
                 return new Response().WithStatusCode(HttpStatusCode.OK);

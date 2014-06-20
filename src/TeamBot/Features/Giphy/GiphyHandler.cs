@@ -1,76 +1,77 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TeamBot.Infrastructure.Messages;
+using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
 
 namespace TeamBot.Features.Giphy
 {
-    public class GiphyHandler : MessageHandler
+    public class GiphyHandler : SlackMessageHandler
     {
-        private readonly IGiphyClient _client;
+        private readonly IGiphyClient _giphy;
 
-        public GiphyHandler(IGiphyClient client)
+        public GiphyHandler(ISlackClient slack, IGiphyClient giphy)
+            : base(slack)
         {
-            if (client == null) 
-                throw new ArgumentNullException("client");
+            if (giphy == null) 
+                throw new ArgumentNullException("giphy");
 
-            _client = client;
+            _giphy = giphy;
         }
 
-        public override string[] Commands()
+        public override async Task Handle(IncomingMessage incomingMessage)
         {
-            return new[] { "giphy", "gif" };
-        }
+            if (incomingMessage == null)
+                throw new ArgumentNullException("incomingMessage");
 
-        public override async Task<Message> Handle(IncomingMessage incomingMessage)
-        {
-            try
+            var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task>>
+		    {
+                { "(giphy|gif)( me)? (.*)", async (message, match) => await GiphyAsync(message, match.Groups[3].Value) },
+		    };
+
+            foreach (var pattern in patterns)
             {
-                if (string.IsNullOrEmpty(incomingMessage.Text))
-                {
-                    return new Message
-                    {
-                        Text = string.Format("@{0} {1}", incomingMessage.UserName, await _client.Random()),
-                    };
-                }
+                var match = Regex.Match(incomingMessage.Text, pattern.Key, RegexOptions.IgnoreCase);
+                if (match.Length > 0)
+                    await pattern.Value(incomingMessage, match);
+            }
+        }
 
-                if (incomingMessage.Text.ToLower().StartsWith("random"))
+        private async Task GiphyAsync(IncomingMessage incomingMessage, string input)
+        {
+            Exception exception = null;
+            try 
+            {
+                if (string.IsNullOrEmpty(input) || input.ToLower().StartsWith("random"))
                 {
-                    return new Message
-                    {
-                        Text = string.Format("@{0} {1}", incomingMessage.UserName, await _client.Random()),
-                    };
+                    await Slack.SendAsync(incomingMessage.ReplyTo(), string.Format("@{0} {1}", incomingMessage.UserName, await _giphy.Random()));
+                    return;
                 }
 
                 var random = new Random();
                 var offset = random.Next(3);
-                var results = await _client.Search(incomingMessage.Text, 10, offset);
+                var results = await _giphy.Search(incomingMessage.Text, 10, offset);
                 var max = results.Count();
 
-                if (max > 0)
-                {
-                    int index = random.Next(max);
-                
-                    return new Message
-                    {
-                        Text = string.Format("@{0} {1}", incomingMessage.UserName, results[index]),
-                    };
-                }
-                else
-                {
-                    return new Message
-                    {
-                        Text = string.Format("@{0} {1}", incomingMessage.UserName, "https://i.chzbgr.com/maxW500/6153751552/hC85366D2/"),
-                    };
-                }
+                var image = max <= 0
+                    ? "https://i.chzbgr.com/maxW500/6153751552/hC85366D2/"
+                    : results[random.Next(max)];
+
+                await Slack.SendAsync(incomingMessage.ReplyTo(), string.Format("@{0} {1}", incomingMessage.UserName, image));
+
             }
             catch (Exception ex)
             {
-                return new Message
-                {
-                    Text = string.Format("@{0} Umm... something went wrong  \"gif {1}\" {2}", incomingMessage.UserName, incomingMessage.Text, ex.Message),
-                };
+                exception = ex;
+            }
+
+            if (exception != null)
+            {
+                var response = string.Format("@{0} Umm... something went wrong  \"{1}\" {2}", incomingMessage.UserName, incomingMessage.Text, exception.Message);
+                await Slack.SendAsync(incomingMessage.ReplyTo(), response);
             }
         }
     }

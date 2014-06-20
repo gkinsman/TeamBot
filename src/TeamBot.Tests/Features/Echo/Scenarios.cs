@@ -1,36 +1,17 @@
-﻿using System.Threading.Tasks;
-using NUnit.Framework;
-using Ploeh.AutoFixture;
-using TeamBot.Features.Echo;
-using TeamBot.Infrastructure.Slack.Models;
-using TeamBot.Tests.Specifications;
+﻿using TeamBot.Features.Echo;
 
 namespace TeamBot.Tests.Features.Echo
 {
-    [Ignore]
-    public class WhenReceivingEchoRequest : AutoSpecificationForAsync<EchoHandler>
+    public class WhenReceivingEchoRequest : HandlerScenarioBase<EchoHandler>
     {
-        protected IncomingMessage IncomingMessage;
-        protected Message Response;
-
-        protected override async Task<EchoHandler> Given()
+        public override string Request
         {
-            IncomingMessage = Fixture.Build<IncomingMessage>()
-                .Without(p => p.Command)
-                .Create();
-
-            return Fixture.Create<EchoHandler>();
+            get { return "echo Hello World!"; }
         }
 
-        protected override async Task When()
+        public override string ExpectedResponse
         {
-            Response = await Subject.Handle(IncomingMessage);
-        }
-
-        [Then]
-        public void ShouldRespondCorrectly()
-        {
-            Response.Text = IncomingMessage.Text;
+            get { return "Hello World!"; }
         }
     }
 }

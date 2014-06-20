@@ -102,7 +102,7 @@ namespace TeamBot.Tests.Conventions
             if (type.IsAssignableTo<NancyModule>()) Assert.Ignore();
             if(type == typeof(UserIdentity)) Assert.Ignore();
 
-            var fixture = new Fixture();
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
 
             var customMatcher = new VisitorEqualityComparer<NameAndType>(
                 new NameAndTypeCollectingVisitor(), new NameAndTypeAssignableComparer());
@@ -118,9 +118,6 @@ namespace TeamBot.Tests.Conventions
             string[] excludeProperties;
             if (excludeTypeProperties.TryGetValue(type, out excludeProperties) == false)
                 excludeProperties = Enumerable.Empty<string>().ToArray();
-
-            if (type.IsAssignableTo<MessageHandler>())
-                excludeProperties = excludeProperties.Union(new[] {"Command"} ).ToArray();
 
             PropertyInfo[] properties = type.GetProperties().Where(p => !excludeProperties.Contains(p.Name)).ToArray();
             assertion.Verify(properties);

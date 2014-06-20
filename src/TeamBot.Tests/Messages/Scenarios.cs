@@ -4,6 +4,7 @@ using NSubstitute;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using Raven.Client;
+using Raven.Client.Embedded;
 using TeamBot.Infrastructure.Messages;
 using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
@@ -12,7 +13,6 @@ using TeamBot.Tests.Specifications;
 
 namespace TeamBot.Tests.Messages
 {
-    [Ignore]
     public class WhenProcessingIncomingMessage : AutoSpecificationForAsync<IMessageProcessor>
     {
         private IContainer _container;
@@ -20,20 +20,16 @@ namespace TeamBot.Tests.Messages
         private IncomingMessage _incomingMessage;
         private ISlackClient _client;
         private IDocumentStore _documentStore;
-        private string _company;
-        private string _token;
-        private IDocumentSession _session;
 
         protected override async Task<IMessageProcessor> Given()
         {
-            _company = string.Format("comapy{0}", Fixture.Create<string>());
-            _token = string.Format("token{0}", Fixture.Create<string>());
-            _client = Fixture.Freeze<ISlackClient>();
-            _session = Fixture.Freeze<IDocumentSession>();
-            _documentStore = Fixture.Freeze<IDocumentStore>();
-            _documentStore.OpenSession().Returns(_session);
+            SlackContext.Current = Fixture.Create<SlackContext>();
 
-            return new MessageProcessor(_documentStore, _client, new [] { Fixture.Create<FooMessageHandler>() });
+            _client = Fixture.Freeze<ISlackClient>();
+            _documentStore = new EmbeddableDocumentStore { RunInMemory = true };
+            _documentStore.Initialize();
+
+            return new MessageProcessor(_client, _documentStore, new[] { Fixture.Create<FooHandler>() });
         }
 
         protected override async Task When()
@@ -46,13 +42,13 @@ namespace TeamBot.Tests.Messages
                 .Without(p => p.Command)
                 .Create();
 
-            await Subject.Process(_company, _token, _incomingMessage);
+            await Subject.Process(_incomingMessage);
         }
 
         [Then]
-        public void Should()
+        public void ShouldProccesTheMessageSuccessfully()
         {
-            _client.Received(1).PostMessage(Arg.Is(_company), Arg.Is(_token), Arg.Is<Message>(m => m.Text == _userMessage));
+            _client.Received(1).SendAsync(Arg.Is(_incomingMessage.ReplyTo()), Arg.Is(_userMessage));
         }
 
         [TearDown]
