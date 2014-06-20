@@ -150,6 +150,7 @@
     <Compile Include="Features\HandlerScenarioBase.cs" />
     <Compile Include="Features\Echo\Scenarios.cs" />
     <Compile Include="Features\EightBall\Scenarios.cs" />
+    <Compile Include="Features\Weather\Scenarios.cs" />
     <Compile Include="Features\WhosTurn\Scenarios.cs" />
     <Compile Include="Messages\Handlers\FooHandler.cs" />
     <Compile Include="Conventions\VerifyAllTypes.cs" />

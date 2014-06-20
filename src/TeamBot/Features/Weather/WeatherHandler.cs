@@ -33,7 +33,7 @@ namespace TeamBot.Features.Weather
             var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task>>
 		    {
                 { "weather (.*)", async (message, match) => await LookupAddressAsync(message, match.Groups[1].Value) },
-                { "weather apikey (.*)", async (message, match) => await LoadApiKeyAsync(message, match.Groups[1].Value) },
+                { "forecast.io( apikey)? (.*)", async (message, match) => await LoadApiKeyAsync(message, match.Groups[2].Value) },
 		    };
 
             foreach (var pattern in patterns)
@@ -48,7 +48,7 @@ namespace TeamBot.Features.Weather
         {
             Brain[ForcastIoApiKey] = input;
 
-            await Slack.SendAsync(incomingMessage.ReplyTo(), string.Format("@{0} Giphy ApiKey Set", incomingMessage.UserName));
+            await Slack.SendAsync(incomingMessage.ReplyTo(), string.Format("@{0} Forcast.io ApiKey set.", incomingMessage.UserName));
         }
 
         private async Task LookupAddressAsync(IncomingMessage incomingMessage, string location)

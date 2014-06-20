@@ -16,6 +16,7 @@ namespace TeamBot.Features.Giphy
     public class GiphyHandler : SlackMessageHandler
     {
         public const string GiphyApiKey = "GiphyApiKey";
+
         private readonly string _giphyUri;
 
         public GiphyHandler(ISlackClient slack)
@@ -37,7 +38,7 @@ namespace TeamBot.Features.Giphy
             var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task>>
 		    {
                 { "(giphy|gif)( me)? (.*)", async (message, match) => await GiphyAsync(message, match.Groups[3].Value) },
-                { "giphy apikey (.*)", async (message, match) => await LoadApiKeyAsync(message, match.Groups[3].Value) },
+                { "giphy.io( apikey)? (.*)", async (message, match) => await LoadApiKeyAsync(message, match.Groups[2].Value) },
 		    };
 
             foreach (var pattern in patterns)
