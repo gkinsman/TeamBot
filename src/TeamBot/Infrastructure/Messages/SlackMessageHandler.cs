@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Raven.Client;
 using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
-using TeamBot.Models;
 
 namespace TeamBot.Infrastructure.Messages
 {
@@ -25,6 +22,11 @@ namespace TeamBot.Infrastructure.Messages
 
         public ISlackClient Slack { get { return _slack; } }
 
+        public virtual string Help()
+        {
+            return string.Empty;
+        }
+        
         public abstract Task Handle(IncomingMessage incomingMessage);
 
         public IDictionary<string, object> Brain

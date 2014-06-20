@@ -17,6 +17,11 @@ namespace TeamBot.Features.EightBall
         {   
         }
 
+        public override string Help()
+        {
+            return "{botname} (eightball|8ball) {question}";
+        }
+
         public override async Task Handle(IncomingMessage incomingMessage)
         {
             if (incomingMessage == null) 

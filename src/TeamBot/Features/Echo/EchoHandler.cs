@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Raven.Client;
 using TeamBot.Infrastructure.Messages;
 using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
@@ -14,6 +13,11 @@ namespace TeamBot.Features.Echo
         public EchoHandler(ISlackClient slack) 
             : base(slack)
         {
+        }
+
+        public override string Help()
+        {
+            return "{botname} echo {message}";
         }
 
         public override async Task Handle(IncomingMessage incomingMessage)

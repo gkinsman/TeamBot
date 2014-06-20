@@ -22,6 +22,11 @@ namespace TeamBot.Features.Giphy
             _giphy = giphy;
         }
 
+        public override string Help()
+        {
+            return "{botname} (gif|giphy) {search}";
+        }
+
         public override async Task Handle(IncomingMessage incomingMessage)
         {
             if (incomingMessage == null)

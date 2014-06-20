@@ -11,6 +11,8 @@ namespace TeamBot.Infrastructure.Messages
 
         ISlackClient Slack { get; }
 
+        string Help();
+
         Task Handle(IncomingMessage incomingMessage);
     }
 }
