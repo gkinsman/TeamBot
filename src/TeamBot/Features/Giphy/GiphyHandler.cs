@@ -68,7 +68,7 @@ namespace TeamBot.Features.Giphy
                 }
 
                 var random = new Random();
-                var results = await Search(incomingMessage.Text);
+                var results = await Search(input);
                 var max = results.Count();
 
                 var image = max <= 0
