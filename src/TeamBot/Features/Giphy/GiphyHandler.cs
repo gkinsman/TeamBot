@@ -68,12 +68,11 @@ namespace TeamBot.Features.Giphy
                 }
 
                 var random = new Random();
-                var offset = random.Next(3);
-                var results = await Search(incomingMessage.Text, 10, offset);
+                var results = await Search(incomingMessage.Text);
                 var max = results.Count();
 
                 var image = max <= 0
-                    ? "https://i.chzbgr.com/maxW500/6153751552/hC85366D2/"
+                    ? await Random()
                     : results[random.Next(max)];
 
                 await Slack.SendAsync(incomingMessage.ReplyTo(), string.Format("@{0} {1}", incomingMessage.UserName, image));
