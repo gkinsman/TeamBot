@@ -27,8 +27,10 @@ namespace TeamBot.Features.Capture
 
             var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task>> 
 		    {
-                { "capture (.*)", async (message, match) => await CaptureAsync(message, match.Groups[1].Value) },
-			    { "release (.*)", async (message, match) => await ReleaseAsync(message, match.Groups[1].Value) },
+                	{ "capture (.*)", async (message, match) => await CaptureAsync(message, match.Groups[1].Value) },
+                	{ "lock (.*)", async (message, match) => await CaptureAsync(message, match.Groups[1].Value) },
+			{ "release (.*)", async (message, match) => await ReleaseAsync(message, match.Groups[1].Value) },
+			{ "unlock (.*)", async (message, match) => await ReleaseAsync(message, match.Groups[1].Value) },
 		    };
 
             foreach (var pattern in patterns)
