@@ -32,7 +32,7 @@ namespace TeamBot.Features.Help
             var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task>>
 		    {
                 { "^help", async (message, match) => await ListFeaturesAsync(message) },
-                {@"^version (.*)", async (message, match) => await VersionAsync(message)},
+                { @"^version", async (message, match) => await VersionAsync(message)},
 		    };
 
             foreach (var pattern in patterns)
