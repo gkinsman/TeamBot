@@ -30,8 +30,8 @@ namespace TeamBot.Features.WhosTurn
 
             var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task>>
 		    {
-                {  @"who (is|turn) @?([\w .\-]+)\?*$", async (message, match) => await TurnAsync(message, match.Groups[2].Value) },
-                {  @"load users (.*)", async (message, match) => await LoadAsync(message, match.Groups[1].Value) },
+                {  @"^who (is|turn) @?([\w '.\-]+)\?*$", async (message, match) => await TurnAsync(message, match.Groups[2].Value) },
+                {  @"^load users (.*)", async (message, match) => await LoadAsync(message, match.Groups[1].Value) },
 		    };
 
             foreach (var pattern in patterns)

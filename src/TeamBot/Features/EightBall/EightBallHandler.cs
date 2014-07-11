@@ -29,8 +29,8 @@ namespace TeamBot.Features.EightBall
             
             var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task>> 
 		    {
-                { "eightball (.*)", async (message, match) => await RespondAsync(message) },
-			    { "8ball (.*)", async (message, match) => await RespondAsync(message) },
+                { "^eightball (.*)", async (message, match) => await RespondAsync(message) },
+			    { "^8ball (.*)", async (message, match) => await RespondAsync(message) },
 		    };
 
             foreach (var pattern in patterns)

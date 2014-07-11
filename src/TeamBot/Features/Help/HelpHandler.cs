@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -30,7 +31,8 @@ namespace TeamBot.Features.Help
 
             var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task>>
 		    {
-                { "help", async (message, match) => await ListFeaturesAsync(message) },
+                { "^help", async (message, match) => await ListFeaturesAsync(message) },
+                {@"^version (.*)", async (message, match) => await VersionAsync(message)},
 		    };
 
             foreach (var pattern in patterns)
@@ -55,6 +57,14 @@ namespace TeamBot.Features.Help
                 Text = "Availible Features",
                 Fields = fields,
             });
+        }
+
+        private async Task VersionAsync(IncomingMessage incomingMessage)
+        {
+            var environmentName = ConfigurationManager.AppSettings["EnvironmentName"];
+            var version = typeof(IoC).Assembly.GetName().Version.ToString(3);
+
+            await Slack.SendAsync(incomingMessage.ReplyTo(), string.Format("{0} - {1}", environmentName, version));
         }
     }
 }

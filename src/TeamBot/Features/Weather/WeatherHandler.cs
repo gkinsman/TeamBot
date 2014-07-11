@@ -32,8 +32,8 @@ namespace TeamBot.Features.Weather
 
             var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task>>
 		    {
-                { "weather (.*)", async (message, match) => await LookupAddressAsync(message, match.Groups[1].Value) },
-                { "forecastio( apikey)? (.*)", async (message, match) => await LoadApiKeyAsync(message, match.Groups[2].Value) },
+                { "^weather (.*)", async (message, match) => await LookupAddressAsync(message, match.Groups[1].Value) },
+                { "^forecastio( apikey)? (.*)", async (message, match) => await LoadApiKeyAsync(message, match.Groups[2].Value) },
 		    };
 
             foreach (var pattern in patterns)

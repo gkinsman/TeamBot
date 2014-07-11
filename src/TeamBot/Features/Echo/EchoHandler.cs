@@ -27,7 +27,8 @@ namespace TeamBot.Features.Echo
 
             var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task>>
             {
-                {"echo (.*)", async (message, match) => await EchoAsync(message, match.Groups[1].Value)},
+                {@"^echo (.*)", async (message, match) => await EchoAsync(message, match.Groups[1].Value)},
+                {@"^send (.[\w]+) (.*)", async (message, match) => await SendAsync(message, match.Groups[1].Value, match.Groups[2].Value)},
             };
 
             foreach (var pattern in patterns)
@@ -45,6 +46,15 @@ namespace TeamBot.Features.Echo
                     : input;
 
             await Slack.SendAsync(incomingMessage.ReplyTo(), response);
+        }
+
+        private async Task SendAsync(IncomingMessage incomingMessage, string replyTo, string input)
+        {
+            var response = incomingMessage.Text.StartsWith(incomingMessage.BotName)
+                    ? string.Format("@{0} I speak for myself thank you very much!", incomingMessage.UserName)
+                    : input;
+
+            await Slack.SendAsync(replyTo, response);
         }
     }
 }

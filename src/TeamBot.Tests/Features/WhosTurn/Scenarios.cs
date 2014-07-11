@@ -59,4 +59,30 @@ namespace TeamBot.Tests.Features.WhosTurn
             get { return string.Format("@{0} users loaded. [{1}]", IncomingMessage.UserName, string.Join(", ", _users)); }
         }
     }
+    
+    public class WhenAskingWhosTurnIsIt : HandlerScenarioBase<WhosTurnHandler>
+    {
+        private readonly List<string> _users = new List<string> { "user1" };
+
+        public override IDictionary<string, object> Brain
+        {
+            get
+            {
+                return new Dictionary<string, object>
+                {
+                    { WhosTurnHandler.UsersKey, string.Join(",", _users) }
+                };
+            }
+        }
+
+        public override string Request
+        {
+            get { return string.Format("who is on beer o'clock next week?"); }
+        }
+
+        public override string ExpectedResponse
+        {
+            get { return string.Format("@{0} is on beer o'clock next week", "user1"); }
+        }
+    }
 }
