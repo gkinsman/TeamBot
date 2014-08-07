@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
@@ -108,16 +107,14 @@ namespace TeamBot
             if (ctx == null) 
                 throw new ArgumentNullException("ctx");
 
-            object owinEnvironmentObject;
-            if (ctx.Items.TryGetValue(NancyOwinHost.RequestEnvironmentKey, out owinEnvironmentObject))
+            var owinEnvironment = ctx.GetOwinEnvironment();
+            
+            object userObject;
+            if (owinEnvironment != null && owinEnvironment.TryGetValue("server.User", out userObject))
             {
-                var owinEnvironment = (IDictionary<string, object>)owinEnvironmentObject;
-                object userObject;
-                if (owinEnvironment != null && owinEnvironment.TryGetValue("server.User", out userObject))
-                {
-                    return (ClaimsPrincipal)userObject;
-                }
+                return (ClaimsPrincipal)userObject;
             }
+            
 
             return null;
         }
