@@ -30,13 +30,13 @@ task Test -depends Compile {
     exec { & $nunitRunner $src\$project.Tests\bin\$configuration\$project.Tests.dll /nologo }
 }
 
-task Compile -depends CommonAssemblyInfo {
+task Compile -depends GlobalAssemblyInfo {
   rd .\build -recurse -force  -ErrorAction SilentlyContinue | out-null
   exec { msbuild /t:clean /v:q /nologo /p:Configuration=$configuration $src\$project.sln }
   exec { msbuild /t:build /v:q /nologo /p:Configuration=$configuration $src\$project.sln }
 }
 
-task CommonAssemblyInfo {
+task GlobalAssemblyInfo {
     $date = Get-Date
     $year = $date.Year
     $copyrightSpan = if ($year -eq $birthYear) { $year } else { "$birthYear-$year" }
@@ -52,5 +52,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright(""$copyright"")]
 [assembly: AssemblyCompany(""$maintainers"")]
 [assembly: AssemblyDescription(""$description"")]
-[assembly: AssemblyConfiguration(""$configuration"")]" | out-file "$src\CommonAssemblyInfo.cs" -encoding "ASCII"
+[assembly: AssemblyConfiguration(""$configuration"")]" | out-file "$src\GlobalAssemblyInfo.cs" -encoding "ASCII"
 }
