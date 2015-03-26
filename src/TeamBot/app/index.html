@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html ng-app="app" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title ng-bind="title"></title>
+    <style>
+        /* This helps the ng-show/ng-hide animations start at the right place. */
+        /* Since Angular has this but needs to load, this gives us the class early. */
+        .ng-hide {
+            display: none !important;
+        }
+    </style>
+
+    <!-- Bootstrap -->
+    <link href="/scripts/vendor/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="/scripts/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/scripts/vendor/toastr/toastr.css" rel="stylesheet" />
+    <link href="/content/styles.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div>
+        <div data-ng-include="'/app/layout/shell.html'"></div>
+        <div id="splash-page" data-ng-show="false">
+            <div class="page-splash">
+                <div class="page-splash-message">
+                    Team Bot
+                </div>
+                <div class="progress progress-striped active page-progress-bar">
+                    <div class="bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vendor Scripts -->
+    <script src="/scripts/vendor/jquery/dist/jquery.js"></script>
+    <script src="/scripts/vendor/angular/angular.js"></script>
+    <script src="/scripts/vendor/angular-animate/angular-animate.js"></script>
+    <script src="/scripts/vendor/angular-route/angular-route.js"></script>
+    <script src="/scripts/vendor/angular-sanitize/angular-sanitize.js"></script>
+    <script src="/scripts/vendor/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/scripts/vendor/toastr/toastr.js"></script>
+    <script src="/scripts/vendor/moment/moment.js"></script>
+    <script src="/scripts/vendor/extras.angular.plus/ngplus-overlay.js"></script>
+    
+    <!-- Bootstrapping -->
+    <script src="/app/app.module.js"></script>
+
+    <!-- Reusable Blocks/Modules -->
+    <script src="/app/blocks/exception/exception.module.js"></script>
+    <script src="/app/blocks/exception/exceptionHandler.js"></script>
+    <script src="/app/blocks/logger/logger.module.js"></script>
+    <script src="/app/blocks/logger/logger.js"></script>
+    <script src="/app/blocks/router/router.module.js"></script>
+    <script src="/app/blocks/router/routehelper.js"></script>
+
+    <!-- core module -->
+    <script src="/app/core/core.module.js"></script>
+    <script src="/app/core/config.js"></script>
+    <script src="/app/core/common.js"></script>
+    <script src="/app/core/dataservice.js"></script>
+    
+    <!-- layout -->
+    <script src="/app/layout/layout.module.js"></script>
+    <script src="/app/layout/shell.js"></script>
+    
+    <!-- dashboard -->
+    <script src="/app/dashboard/dashboard.module.js"></script>
+    <script src="/app/dashboard/config.route.js"></script>
+    <script src="/app/dashboard/dashboard.js"></script>
+
+</body>
+</html>

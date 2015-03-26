@@ -1,0 +1,41 @@
+(function () {
+    'use strict';
+
+    angular
+        .module('app.dashboard')
+        .controller('Dashboard', Dashboard);
+
+    Dashboard.$inject = ['common', 'dataservice'];
+
+    function Dashboard(common, dataservice) {
+        var log = common.logger.info;
+
+        /*jshint validthis: true */
+        var vm = this;
+
+        vm.title = 'Dashboard';
+
+        activate();
+
+        function activate() {
+            var promises = [getAvengerCount(), getAvengersCast()];
+            return dataservice.ready(promises).then(function(){
+                log('Activated Dashboard View');
+            });
+        }
+
+        function getAvengerCount() {
+            return dataservice.getAvengerCount().then(function (data) {
+                vm.avengerCount = data;
+                return vm.avengerCount;
+            });
+        }
+
+        function getAvengersCast() {
+            return dataservice.getAvengersCast().then(function (data) {
+                vm.avengers = data;
+                return vm.avengers;
+            });
+        }
+    }
+})();

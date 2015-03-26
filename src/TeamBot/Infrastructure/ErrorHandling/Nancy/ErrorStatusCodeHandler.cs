@@ -26,12 +26,18 @@ namespace TeamBot.Infrastructure.ErrorHandling.Nancy
 
         public bool HandlesStatusCode(HttpStatusCode statusCode, NancyContext context)
         {
+            if (context == null) 
+                throw new ArgumentNullException("context");
+
             return statusCode == HttpStatusCode.NotFound
                 || statusCode == HttpStatusCode.InternalServerError;
         }
 
         public void Handle(HttpStatusCode statusCode, NancyContext context)
         {
+            if (context == null) 
+                throw new ArgumentNullException("context");
+
             var clientWantsHtml = ShouldRenderFriendlyErrorPage(context);
             switch (statusCode)
             {

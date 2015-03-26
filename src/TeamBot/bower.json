@@ -1,0 +1,33 @@
+{
+    "name": "TeamBot",
+    "version": "0.0.1",
+    "homepage": "https://github.com/gertjvr/TeamBot",
+    "authors": [
+        "Gert Jansen van Rensburg <gertjvr@gmail.com>"
+    ],
+    "description": "Bot for Slack",
+    "main": "index.html",
+    "license": "MIT",
+    "private": true,
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "Scripts",
+        "test",
+        "tests"
+    ],
+    "devDependencies": {
+        "bootstrap": "~3.1.x",
+        "moment": "~2.8.x",
+        "jquery": "~2.1.x",
+        "angular": "~1.2.x",
+        "angular-route": "~1.2.x",
+        "angular-animate": "~1.2.x",
+        "angular-sanitize": "~1.2.x",
+        "font-awesome": "~4.1.x",
+        "toastr": "~2.0.x"
+    },
+    "dependencies": { 
+        "extras.angular.plus": "~0.9.x"
+    }
+}

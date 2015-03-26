@@ -37,19 +37,14 @@ namespace TeamBot.Infrastructure.Messages
 
         public async Task Process(IncomingMessage incomingMessage)
         {
-            Log.Debug("Processing {@incomingMessage}",  incomingMessage);
+            Log.Debug("Processing {@incomingMessage}", incomingMessage);
 
             if (incomingMessage == null)
-                    throw new ArgumentNullException("incomingMessage");
+                throw new ArgumentNullException("incomingMessage");
 
-            var values = incomingMessage.Text.Split(new [] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            incomingMessage.BotName = ExtractBotName(incomingMessage);
 
-            var botName = incomingMessage.IsSlashCommand()
-                ? incomingMessage.Command.Substring(1)
-                : values[0].ToLower().Replace(":", "");
-
-            incomingMessage.BotName = botName;
-
+            var values = incomingMessage.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             var command = values[incomingMessage.Command == null ? 1 : 0].ToLower();
             incomingMessage.Text = string.Join(" ", values.Skip(incomingMessage.IsSlashCommand() ? 0 : 1));
 
@@ -88,6 +83,17 @@ namespace TeamBot.Infrastructure.Messages
 
                 await _client.SendAsync(incomingMessage.ReplyTo(), response);
             }
+        }
+
+        private string ExtractBotName(IncomingMessage incomingMessage)
+        {
+            var values = incomingMessage.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var botName = incomingMessage.IsSlashCommand()
+                ? incomingMessage.Command.Substring(1)
+                : values[0].ToLower().Replace(":", "");
+
+            return botName;
         }
     }
 }
