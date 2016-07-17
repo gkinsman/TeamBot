@@ -12,8 +12,6 @@ using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.AutoNSubstitute;
 using Ploeh.AutoFixture.Idioms;
 using TeamBot.AutofacModules;
-using TeamBot.Features.Giphy;
-using TeamBot.Infrastructure.Messages;
 using TeamBot.Infrastructure.Security;
 
 namespace TeamBot.Tests.Conventions

@@ -20,12 +20,12 @@ namespace TeamBot.Features.Echo
             return "echo {message}";
         }
 
-        public override async Task Handle(IncomingMessage incomingMessage)
+        public override async Task<Message> Handle(IncomingMessage incomingMessage)
         {
             if (incomingMessage == null)
                 throw new ArgumentNullException("incomingMessage");
 
-            var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task>>
+            var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task<Message>>>
             {
                 {@"^echo (.*)", async (message, match) => await EchoAsync(message, match.Groups[1].Value)},
                 {@"^send (.[\w]+) (.*)", async (message, match) => await SendAsync(message, match.Groups[1].Value, match.Groups[2].Value)},
@@ -35,26 +35,37 @@ namespace TeamBot.Features.Echo
             {
                 var match = Regex.Match(incomingMessage.Text, pattern.Key, RegexOptions.IgnoreCase);
                 if (match.Length > 0)
-                    await pattern.Value(incomingMessage, match);
+                    return await pattern.Value(incomingMessage, match);
             }
+
+            return null;
+
         }
 
-        private async Task EchoAsync(IncomingMessage incomingMessage, string input)
+        private async Task<Message> EchoAsync(IncomingMessage incomingMessage, string input)
         {
             var response = incomingMessage.Text.StartsWith(incomingMessage.BotName)
                     ? string.Format("@{0} I speak for myself thank you very much!", incomingMessage.UserName)
                     : input;
 
-            await Slack.SendAsync(incomingMessage.ReplyTo(), response);
+            return new Message()
+            {
+                Text = response,
+                UserName = incomingMessage.ReplyTo()
+            };
         }
 
-        private async Task SendAsync(IncomingMessage incomingMessage, string replyTo, string input)
+        private async Task<Message> SendAsync(IncomingMessage incomingMessage, string replyTo, string input)
         {
             var response = incomingMessage.Text.StartsWith(incomingMessage.BotName)
                     ? string.Format("@{0} I speak for myself thank you very much!", incomingMessage.UserName)
                     : input;
 
-            await Slack.SendAsync(replyTo, response);
+            return new Message()
+            {
+                Text = response,
+                UserName = replyTo
+            };
         }
     }
 }

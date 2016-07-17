@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Ploeh.AutoFixture;
-using TeamBot.Features.Capture;
 using TeamBot.Infrastructure.Slack.Models;
 
 namespace TeamBot.Tests.Features.Capture

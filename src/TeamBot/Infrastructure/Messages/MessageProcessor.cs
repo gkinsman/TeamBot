@@ -70,9 +70,6 @@ namespace TeamBot.Infrastructure.Messages
                         handler.Brain = model.ViewBag;
 
                         await handler.Handle(incomingMessage);
-
-                        session.Store(model);
-                        session.SaveChanges();
                     }
                 }
             }

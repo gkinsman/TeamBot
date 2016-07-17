@@ -71,9 +71,12 @@ namespace TeamBot
 
         private static void ConfigureLogging()
         {
+            var logLocation = string.Format(@"TeamBotLog-{0}-{{Date}}.txt",
+                AppEnvironment.EnvironmentName);
+
             var loggerConfig = new LoggerConfiguration()
                 .WriteTo.Trace()
-                .WriteTo.RollingFile(string.Format(@"C:\Artifacts\Logs\TeamBotLog-{0}-{{Date}}.txt", AppEnvironment.EnvironmentName))
+                .WriteTo.RollingFile(logLocation)
                 .WriteTo.Seq(System.Configuration.ConfigurationManager.AppSettings["SeqServerUri"])
                 .Enrich.WithThreadId()
                 .Enrich.FromLogContext()

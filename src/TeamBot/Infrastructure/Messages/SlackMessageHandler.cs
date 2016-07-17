@@ -27,7 +27,7 @@ namespace TeamBot.Infrastructure.Messages
             return string.Empty;
         }
         
-        public abstract Task Handle(IncomingMessage incomingMessage);
+        public abstract Task<Message> Handle(IncomingMessage incomingMessage);
 
         public IDictionary<string, object> Brain
         {

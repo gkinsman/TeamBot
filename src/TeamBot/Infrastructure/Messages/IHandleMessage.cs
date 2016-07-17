@@ -13,6 +13,6 @@ namespace TeamBot.Infrastructure.Messages
 
         string Help();
 
-        Task Handle(IncomingMessage incomingMessage);
+        Task<Message> Handle(IncomingMessage incomingMessage);
     }
 }
