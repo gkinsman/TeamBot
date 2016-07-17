@@ -27,10 +27,7 @@ namespace TeamBot.Features
                     ? this.Bind<IncomingMessage>()
                     : ExtractMessage(Request.Form);
 
-                string company = Request.Query.Company;
-                string token = Request.Query.Token;
-
-                SlackContext.Current = new SlackContext(company, token);
+                SlackContext.Current = new SlackContext("Readify", incomingMessage.Token);
 
                 return await Task.Run(async () =>
                 {
