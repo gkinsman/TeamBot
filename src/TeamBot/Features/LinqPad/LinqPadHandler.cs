@@ -34,7 +34,7 @@ namespace TeamBot.Features.LinqPad
 
             foreach (var pattern in patterns)
             {
-                var match = Regex.Match(incomingMessage.TriggerWord, pattern.Key, RegexOptions.IgnoreCase);
+                var match = Regex.Match($"{incomingMessage.TriggerWord} {incomingMessage.Text}", pattern.Key, RegexOptions.IgnoreCase);
                 if (match.Length > 0)
                     return await pattern.Value(incomingMessage, match);
             }
