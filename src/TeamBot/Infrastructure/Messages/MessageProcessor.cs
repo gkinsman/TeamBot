@@ -71,7 +71,11 @@ namespace TeamBot.Infrastructure.Messages
                 var response = string.Format("@{0} Umm, something went wrong  \"{1} {2}\" {3}", incomingMessage.UserName,
                     command, incomingMessage.Text, exception.Message);
 
-                await _client.SendAsync(incomingMessage.ReplyTo(), response);
+                Log.Error(exception, "Something went bang!");
+
+                return new Message() {
+                    Text = response
+                };
             }
 
             return null;
