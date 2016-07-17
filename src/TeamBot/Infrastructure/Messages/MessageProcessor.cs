@@ -14,35 +14,29 @@ namespace TeamBot.Infrastructure.Messages
     {
         private readonly IEnumerable<IHandleMessage> _messageHandlers;
         private readonly ISlackClient _client;
-        private readonly IDocumentStore _documentStore;
 
         public MessageProcessor(
             ISlackClient client,
-            IDocumentStore documentStore,
             IEnumerable<IHandleMessage> messageHandlers)
         {
-            if (client == null) 
+            if (client == null)
                 throw new ArgumentNullException("client");
-            
-            if (documentStore == null) 
-                throw new ArgumentNullException("documentStore");
 
-            if (messageHandlers == null) 
+            if (messageHandlers == null)
                 throw new ArgumentNullException("messageHandlers");
 
             _client = client;
-            _documentStore = documentStore;
             _messageHandlers = messageHandlers;
         }
 
         public async Task Process(IncomingMessage incomingMessage)
         {
-            Log.Debug("Processing {@incomingMessage}",  incomingMessage);
+            Log.Debug("Processing {@incomingMessage}", incomingMessage);
 
             if (incomingMessage == null)
-                    throw new ArgumentNullException("incomingMessage");
+                throw new ArgumentNullException("incomingMessage");
 
-            var values = incomingMessage.Text.Split(new [] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var values = incomingMessage.Text.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
 
             var botName = incomingMessage.IsSlashCommand()
                 ? incomingMessage.Command.Substring(1)
@@ -58,19 +52,10 @@ namespace TeamBot.Infrastructure.Messages
             {
                 foreach (var handler in _messageHandlers)
                 {
-                    using (var session = _documentStore.OpenSession())
-                    {
-                        var handlerType = handler.GetType().FullName;
-                        var company = SlackContext.Current.Company;
-                        var models = session.Query<ViewBagModel>();
+                    var handlerType = handler.GetType().FullName;
+                    var company = SlackContext.Current.Company;
 
-                        var model = models.FirstOrDefault(c => c.Company == company && c.HandlerName == handlerType)
-                                    ?? new ViewBagModel(company, handlerType);
-
-                        handler.Brain = model.ViewBag;
-
-                        await handler.Handle(incomingMessage);
-                    }
+                    await handler.Handle(incomingMessage);
                 }
             }
             catch (Exception ex)
