@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -71,18 +73,19 @@ namespace TeamBot
 
         private static void ConfigureLogging()
         {
-            var logLocation = string.Format(@"TeamBotLog-{0}-{{Date}}.txt",
-                AppEnvironment.EnvironmentName);
+            var logLocation = Path.Combine(new DefaultRootPathProvider().GetRootPath(),
+                $@"TeamBotLog-{AppEnvironment.EnvironmentName}-{{Date}}.txt");
              
             var loggerConfig = new LoggerConfiguration()
                 .WriteTo.Trace()
                 .WriteTo.RollingFile(logLocation)
-                .WriteTo.Seq(System.Configuration.ConfigurationManager.AppSettings["SeqServerUri"])
+                .WriteTo.Seq(ConfigurationManager.AppSettings["SeqServerUri"])
+                .WriteTo.ApplicationInsightsEvents(ConfigurationManager.AppSettings["InstrumentationKey"])
                 .Enrich.WithThreadId()
                 .Enrich.FromLogContext()
                 .Enrich.With(new AppEnvironmentEnricher(ApplicationName, typeof(Startup).Assembly.GetName().Version.ToString()))
                 .Destructure.ByTransforming<Request>(r => new { r.Method, Url = r.Url.ToString(), Headers = r.Headers.ToDictionary(x => x.Key, x => x.Value), Cookies = r.Cookies.ToDictionary(x => x.Key, x => x.Value), r.Form, r.UserHostAddress })
-                .MinimumLevel.Is((LogEventLevel)Enum.Parse(typeof(LogEventLevel), System.Configuration.ConfigurationManager.AppSettings["MinimumLogLevel"]));
+                .MinimumLevel.Is((LogEventLevel)Enum.Parse(typeof(LogEventLevel), ConfigurationManager.AppSettings["MinimumLogLevel"]));
 
             Log.Logger = loggerConfig.CreateLogger();
         }
