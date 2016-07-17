@@ -29,12 +29,12 @@ namespace TeamBot.Features.LinqPad
 
             var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task<Message>>>
             {
-                { "^(lp|linqpad|linq) (.*)", async (message, match) => await LinqpadAsync(message, match.Groups[2].Value) },
+                { "^(lp) (.*)", async (message, match) => await LinqpadAsync(message, match.Groups[2].Value) },
             };
 
             foreach (var pattern in patterns)
             {
-                var match = Regex.Match(incomingMessage.Text, pattern.Key, RegexOptions.IgnoreCase);
+                var match = Regex.Match(incomingMessage.TriggerWord, pattern.Key, RegexOptions.IgnoreCase);
                 if (match.Length > 0)
                     return await pattern.Value(incomingMessage, match);
             }
