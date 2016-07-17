@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Humanizer;
 using Nancy;
 using Serilog;
 using TeamBot.Infrastructure.Messages;
@@ -58,7 +59,7 @@ namespace TeamBot.Features.LinqPad
                 var replyMessage = new Message()
                 {
                     UserName = message.ReplyTo(),
-                    Text = errorsString
+                    Text = errorsString.Truncate(500)
                 };
 
                 Log.Information("Returning with compilation warnings {WarningMessage}", replyMessage);
@@ -73,8 +74,7 @@ namespace TeamBot.Features.LinqPad
 
             return new Message()
             {
-                Text = result,
-                UserName = message.ReplyTo()
+                Text = result.Truncate(1000),
             };
         }
 
