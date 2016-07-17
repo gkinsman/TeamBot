@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Nancy;
 using Nancy.ModelBinding;
+using Serilog;
 using TeamBot.Infrastructure.Messages;
 using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
@@ -31,7 +32,13 @@ namespace TeamBot.Features
 
                 SlackContext.Current = new SlackContext(company, token);
 
-                return await Task.Run(async () => await _messageProcessor.Process(incomingMessage));
+                return await Task.Run(async () =>
+                {
+                    var response = await _messageProcessor.Process(incomingMessage);
+                    Log.Debug("Responding with {Response}", response);
+                    return response;
+                });
+
             };
         }
 
