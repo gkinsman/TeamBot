@@ -66,7 +66,7 @@ namespace TeamBot.Features.LinqPad
                 return replyMessage;
             }
 
-            var executer = compilation.Run(LINQPad.QueryResultFormat.Html);
+            var executer = compilation.Run(LINQPad.QueryResultFormat.Text);
             var result = await executer.AsStringAsync();
 
             Log.Debug("Result of script {Script}: {Result}", value, result);
@@ -80,7 +80,6 @@ namespace TeamBot.Features.LinqPad
 
         private async Task<string> WriteScriptToFile(string script)
         {
-
             var fileName = Path.GetTempFileName();
 
             var fileContents = Encoding.UTF8.GetBytes(script);
