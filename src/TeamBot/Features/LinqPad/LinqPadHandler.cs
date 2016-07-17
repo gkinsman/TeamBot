@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using JetBrains.dotMemoryUnit.Util;
 using Nancy;
 using TeamBot.Infrastructure.Messages;
 using TeamBot.Infrastructure.Slack;
