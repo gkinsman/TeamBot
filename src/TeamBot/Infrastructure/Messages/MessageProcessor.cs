@@ -57,7 +57,8 @@ namespace TeamBot.Infrastructure.Messages
 
                     Log.Information("Handling message with {HandlerType}", handlerType);
 
-                    return await handler.Handle(incomingMessage);
+                    var response = await handler.Handle(incomingMessage);
+                    if (response != null) return response;
                 }
             }
             catch (Exception ex)
