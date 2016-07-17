@@ -73,7 +73,7 @@ namespace TeamBot
         {
             var logLocation = string.Format(@"TeamBotLog-{0}-{{Date}}.txt",
                 AppEnvironment.EnvironmentName);
-
+             
             var loggerConfig = new LoggerConfiguration()
                 .WriteTo.Trace()
                 .WriteTo.RollingFile(logLocation)
