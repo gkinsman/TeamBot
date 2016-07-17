@@ -80,7 +80,7 @@ namespace TeamBot.Features.LinqPad
 
         private async Task<string> WriteScriptToFile(IncomingMessage message, string script)
         {
-            var fileName = $"{message.UserName}-{DateTime.UtcNow.ToString("o")}-{Guid.NewGuid()}";
+            var fileName = $"{message.UserName}-{DateTime.UtcNow.ToString("yyyy-MM-dd_hh-mm-ss-tt")}-{Guid.NewGuid()}";
             var scriptDirectory = Path.Combine(_pathProvider.GetRootPath(), "LinqPadScripts");
 
             if (!Directory.Exists(scriptDirectory)) Directory.CreateDirectory(scriptDirectory);
