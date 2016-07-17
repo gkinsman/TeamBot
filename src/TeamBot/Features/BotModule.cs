@@ -31,12 +31,7 @@ namespace TeamBot.Features
 
                 SlackContext.Current = new SlackContext(company, token);
 
-                await Task.Run(async () =>
-                {
-                    await _messageProcessor.Process(incomingMessage);
-                });
-
-                return new Response().WithStatusCode(HttpStatusCode.OK);
+                return await Task.Run(async () => await _messageProcessor.Process(incomingMessage));
             };
         }
 

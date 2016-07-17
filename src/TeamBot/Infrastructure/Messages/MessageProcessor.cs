@@ -29,7 +29,7 @@ namespace TeamBot.Infrastructure.Messages
             _messageHandlers = messageHandlers;
         }
 
-        public async Task Process(IncomingMessage incomingMessage)
+        public async Task<Message> Process(IncomingMessage incomingMessage)
         {
             Log.Debug("Processing {@incomingMessage}", incomingMessage);
 
@@ -57,7 +57,7 @@ namespace TeamBot.Infrastructure.Messages
 
                     Log.Information("Handling message with {HandlerType}", handlerType);
 
-                    await handler.Handle(incomingMessage);
+                    return await handler.Handle(incomingMessage);
                 }
             }
             catch (Exception ex)
@@ -72,6 +72,8 @@ namespace TeamBot.Infrastructure.Messages
 
                 await _client.SendAsync(incomingMessage.ReplyTo(), response);
             }
+
+            return null;
         }
     }
 }
