@@ -44,7 +44,7 @@ namespace TeamBot.Features.LinqPad
 
         private async Task<Message> LinqpadAsync(IncomingMessage message, string value)
         {
-            var fileName = await WriteScriptToFile(message, value);
+            var fileName = await WriteScriptToFile(value);
 
             Log.Debug("Linqpad handling {Command} with input {Input} to filename {FileName}", message, value, fileName);
 
@@ -78,16 +78,10 @@ namespace TeamBot.Features.LinqPad
             };
         }
 
-        private async Task<string> WriteScriptToFile(IncomingMessage message, string script)
+        private async Task<string> WriteScriptToFile(string script)
         {
-            var folderRoot = Environment.GetEnvironmentVariable("WEBROOT_PATH") ?? "";
 
-            var fileName = $"{message.UserName}-{DateTime.UtcNow.ToString("yyyy-MM-dd_hh-mm-ss-tt")}-{Guid.NewGuid()}";
-            var scriptDirectory = Path.Combine(folderRoot, "LinqPadScripts");
-
-            if (!Directory.Exists(scriptDirectory)) Directory.CreateDirectory(scriptDirectory);
-
-            var fullFileName = Path.Combine(scriptDirectory, fileName);
+            var fileName = Path.GetTempFileName();
 
             var fileContents = Encoding.UTF8.GetBytes(script);
             using (var fileStream = File.OpenWrite(fileName))
@@ -95,7 +89,7 @@ namespace TeamBot.Features.LinqPad
                 await fileStream.WriteAsync(fileContents, 0, fileContents.Length);
             }
 
-            return fullFileName;
+            return fileName;
         }
     }
 }
