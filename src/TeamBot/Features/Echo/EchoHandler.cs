@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Serilog;
 using TeamBot.Infrastructure.Messages;
 using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
@@ -44,6 +45,8 @@ namespace TeamBot.Features.Echo
 
         private async Task<Message> EchoAsync(IncomingMessage incomingMessage, string input)
         {
+            Log.Information("Echo handling {Message} with {Input}", incomingMessage, input);
+
             var response = incomingMessage.Text.StartsWith(incomingMessage.BotName)
                     ? string.Format("@{0} I speak for myself thank you very much!", incomingMessage.UserName)
                     : input;

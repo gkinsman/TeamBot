@@ -55,6 +55,8 @@ namespace TeamBot.Infrastructure.Messages
                     var handlerType = handler.GetType().FullName;
                     var company = SlackContext.Current.Company;
 
+                    Log.Information("Handling message with {HandlerType}", handlerType);
+
                     await handler.Handle(incomingMessage);
                 }
             }

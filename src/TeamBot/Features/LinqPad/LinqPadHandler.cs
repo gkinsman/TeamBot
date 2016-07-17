@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Nancy;
+using Serilog;
 using TeamBot.Infrastructure.Messages;
 using TeamBot.Infrastructure.Slack;
 using TeamBot.Infrastructure.Slack.Models;
@@ -45,6 +46,8 @@ namespace TeamBot.Features.LinqPad
         {
             var fileName = await WriteScriptToFile(message, value);
 
+            Log.Debug("Linqpad handling {Command} with input {Input} to filename {FileName}", message, value, fileName);
+
             var compilation = await LINQPad.Util.CompileAsync(fileName);
 
             if (compilation.Warnings.Any())
@@ -52,11 +55,21 @@ namespace TeamBot.Features.LinqPad
                 var errorsString = string.Join(Environment.NewLine, $"{compilation.Warnings.Length} found: ",
                     compilation.Warnings);
 
-                await Slack.SendAsync(message.ReplyTo(), errorsString);
+                var replyMessage = new Message()
+                {
+                    UserName = message.ReplyTo(),
+                    Text = errorsString
+                };
+
+                Log.Information("Returning with compilation warnings {WarningMessage}", replyMessage);
+
+                return replyMessage;
             }
 
             var executer = compilation.Run(LINQPad.QueryResultFormat.Html);
             var result = await executer.AsStringAsync();
+
+            Log.Debug("Result of script {Script}: {Result}", value, result);
 
             return new Message()
             {
