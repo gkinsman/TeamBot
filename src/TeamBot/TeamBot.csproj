@@ -47,10 +47,6 @@
     <Reference Include="Autofac">
       <HintPath>..\..\packages\Autofac.3.4.0\lib\net40\Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="dotMemory.Unit">
-      <HintPath>..\..\packages\JetBrains.dotMemoryUnit.2.3.20160517.113140\lib\dotMemory.Unit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="LINQPad, Version=1.0.0.0, Culture=neutral, PublicKeyToken=21353812cd2a2db5, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\libs\LINQPad.exe</HintPath>
