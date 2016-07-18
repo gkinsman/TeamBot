@@ -30,7 +30,7 @@ namespace TeamBot.Features.LinqPad
 
             var patterns = new Dictionary<string, Func<IncomingMessage, Match, Task<Message>>>
             {
-                { "^(lp) (.*)", async (message, match) => await LinqpadAsync(message, match.Groups[2].Value) },
+                {"^(lp) (.*)", async (message, match) => await LinqpadAsync(message, match.Groups[2].Value)},
             };
 
             foreach (var pattern in patterns)
@@ -45,7 +45,8 @@ namespace TeamBot.Features.LinqPad
 
         private async Task<Message> LinqpadAsync(IncomingMessage message, string value)
         {
-            var fileName = await WriteScriptToFile(value);
+            var fileName =
+                await WriteScriptToFile(value.StartsWith("s") ? value.Substring(1) : value, value.StartsWith("s"));
 
             Log.Debug("Linqpad handling {Command} with input {Input} to filename {FileName}", message, value, fileName);
 
@@ -78,9 +79,11 @@ namespace TeamBot.Features.LinqPad
             };
         }
 
-        private async Task<string> WriteScriptToFile(string script)
+        private async Task<string> WriteScriptToFile(string script, bool isStatement)
         {
             var fileName = Path.GetTempFileName();
+
+            script = $"{(isStatement ? "<Query Kind=\"Program\" />" + Environment.NewLine : "")} {script}";
 
             var fileContents = Encoding.UTF8.GetBytes(script);
             using (var fileStream = File.OpenWrite(fileName))

@@ -69,7 +69,7 @@ namespace TeamBot.Infrastructure.Messages
             if (exception != null)
             {
                 var response = string.Format("@{0} Umm, something went wrong  \"{1} {2}\" {3}", incomingMessage.UserName,
-                    command, incomingMessage.Text, exception.Message);
+                    incomingMessage.TriggerWord, incomingMessage.Text, exception.Message);
 
                 Log.Error(exception, "Something went bang!");
 
