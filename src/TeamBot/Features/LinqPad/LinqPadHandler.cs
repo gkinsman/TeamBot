@@ -35,7 +35,8 @@ namespace TeamBot.Features.LinqPad
 
             foreach (var pattern in patterns)
             {
-                var match = Regex.Match($"{incomingMessage.TriggerWord} {incomingMessage.Text}", pattern.Key, RegexOptions.IgnoreCase);
+                var match = Regex.Match($"{incomingMessage.TriggerWord} {incomingMessage.Text}", pattern.Key,
+                    RegexOptions.IgnoreCase);
                 if (match.Length > 0)
                     return await pattern.Value(incomingMessage, match);
             }
@@ -69,6 +70,7 @@ namespace TeamBot.Features.LinqPad
             }
 
             var executer = compilation.Run(LINQPad.QueryResultFormat.Text);
+
             var result = await executer.AsStringAsync();
 
             Log.Debug("Result of script {Script}: {Result}", value, result);
@@ -83,7 +85,7 @@ namespace TeamBot.Features.LinqPad
         {
             var fileName = Path.GetTempFileName();
 
-            script = $"{(isStatement ? "<Query Kind=\"Program\" />" + Environment.NewLine : "")} {script}";
+            script = $"{(isStatement ? "<Query Kind=\"Statement\" />" + Environment.NewLine : "")} {script}";
 
             var fileContents = Encoding.UTF8.GetBytes(script);
             using (var fileStream = File.OpenWrite(fileName))
